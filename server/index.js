@@ -3,9 +3,11 @@ const cors = require("cors");
 const db = require("./models");
 require("dotenv").config();
 
+const routes = require("./routes");
 const PORT = 2000;
 
 const app = express();
+app.use("/public", express.static("./public"));
 
 app.use(express.json());
 app.use(cors());
@@ -13,6 +15,8 @@ app.use(cors());
 app.get("/api", (req, res) => {
   res.send("API TEST");
 });
+
+app.use("/admin", routes.admin);
 
 app.listen(PORT, () => {
   // db.sequelize.sync({ alter: true });
