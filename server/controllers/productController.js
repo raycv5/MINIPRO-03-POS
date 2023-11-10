@@ -1,10 +1,22 @@
-const { Product } = require("../models");
+const { Product, Sub_Category, Category } = require("../models");
 
 module.exports = {
    getAllProduct: async (req, res) => {
       try {
-         const product = await Product.findAll();
-         res.status(200).send(product);
+         const products = await Product.findAll();
+         res.status(200).send(products);
+      } catch (error) {
+         res.status(400).send({ message: error.message });
+      }
+   },
+   getById: async (req, res) => {
+      try {
+         const productById = await Product.findOne({
+            where: {
+               id: req.params.id,
+            },
+         });
+         res.status(200).send(productById);
       } catch (error) {
          res.status(400).send({ message: error.message });
       }
@@ -12,10 +24,9 @@ module.exports = {
    addProduct: async (req, res) => {
       const {
          name,
-         descripton,
+         description,
          price,
          image,
-         isDisabled,
          stock_quantity,
          CategoryId,
          SubCategoryId,
@@ -32,16 +43,75 @@ module.exports = {
          }
          await Product.create({
             name,
-            descripton,
+            description,
             price,
             image,
-            isDisabled,
             stock_quantity,
             CategoryId,
             SubCategoryId,
             AdminId,
          });
          res.status(200).send("Product created successfully");
+      } catch (error) {
+         res.status(400).send({ message: error.message });
+      }
+   },
+   getProductBySubCategory: async (req, res) => {
+      const { CategoryId, SubCategoryId } = req.query;
+      try {
+         const getProductsBySubCategory = await Product.findAll({
+            where: {
+               CategoryId,
+               SubCategoryId,
+            },
+            include: [
+               {
+                  model: Category,
+                  attributes: ["id", "name"],
+               },
+               {
+                  model: Sub_Category,
+                  attributes: ["id", "name"],
+               },
+            ],
+         });
+         res.status(200).send(getProductsBySubCategory);
+      } catch (error) {
+         res.status(400).send({ message: error.message });
+      }
+   },
+   editProduct: async (req, res) => {
+      try {
+         await Product.update({
+            where: {
+               id: req.params.id,
+            },
+         });
+         res.status(200).send("Product updated successfully");
+      } catch (error) {
+         res.status(400).send({ message: error.message });
+      }
+   },
+   deleteProduct: async (req, res) => {
+      try {
+         await Product.destroy({
+            where: {
+               id: req.params.id,
+            },
+         });
+      } catch (error) {
+         res.status(400).send({ message: error.message });
+      }
+   },
+   countProduct: async (req, res) => {
+      try {
+         const countProducts = await Product.count({
+            where: {
+               CategoryId: req.query.CategoryId,
+               SubCategoryId: req.query.SubCategoryId,
+            },
+         });
+         res.status(200).send({ count: countProducts });
       } catch (error) {
          res.status(400).send({ message: error.message });
       }

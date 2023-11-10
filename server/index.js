@@ -20,9 +20,9 @@ app.get("/api", (req, res) => {
 });
 
 app.use("/admin", routes.admin);
-app.use("/category", routes.category);
+app.use("/categories", routes.category);
 app.use("/subcategories", routes.subCategory);
-app.use("/product", routes.product);
+app.use("/products", routes.product);
 
 app.listen(PORT, () => {
    //  db.sequelize.sync({ alter: true });
