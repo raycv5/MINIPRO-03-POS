@@ -16,11 +16,11 @@ app.use(cors());
 // console.log(process.env.MESSAGE);
 
 app.get("/api", (req, res) => {
-  res.send("API TEST");
+   res.send("API TEST");
 });
 
 app.use("/admin", routes.admin);
-app.use("/category", routes.category);
+app.use("/categories", routes.category);
 app.use("/subcategories", routes.subCategory);
 app.use("/product", routes.product);
 app.use("/payment", routes.payment);
