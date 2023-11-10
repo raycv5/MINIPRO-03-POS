@@ -22,9 +22,10 @@ app.get("/api", (req, res) => {
 app.use("/admin", routes.admin);
 app.use("/categories", routes.category);
 app.use("/subcategories", routes.subCategory);
-app.use("/products", routes.product);
+app.use("/product", routes.product);
+app.use("/payment", routes.payment);
 
 app.listen(PORT, () => {
-   //  db.sequelize.sync({ alter: true });
-   console.log(`Server running on PORT ${PORT}`);
+  //  db.sequelize.sync({ alter: true });
+  console.log(`Server running on PORT ${PORT}`);
 });

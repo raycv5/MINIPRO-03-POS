@@ -9,4 +9,5 @@ router.get("/:id", productController.getById);
 router.patch("/:id", productController.editProduct);
 router.delete("/:id", productController.deleteProduct);
 
+
 module.exports = router;

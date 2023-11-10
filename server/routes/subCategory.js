@@ -8,4 +8,5 @@ router.get("/:id", subCategoryController.getSubCategoryById);
 router.patch("/:id", subCategoryController.editSubCategory);
 router.delete("/:id", subCategoryController.deleteSubCategory);
 
+
 module.exports = router;

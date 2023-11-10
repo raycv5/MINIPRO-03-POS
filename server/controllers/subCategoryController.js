@@ -1,8 +1,10 @@
 const { Sub_Category, Category, Product } = require("../models");
 
+
 module.exports = {
    getAllSubCategory: async (req, res) => {
       try {
+
          const subCategories = await Sub_Category.findAll();
          res.status(200).send(subCategories);
       } catch (error) {
