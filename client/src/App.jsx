@@ -1,12 +1,5 @@
-import "./App.css";
-import Menu from "./pages/Menu";
-
 function App() {
-  return (
-    <>
-      <Menu />
-    </>
-  );
+  return <></>;
 }
 
 export default App;
