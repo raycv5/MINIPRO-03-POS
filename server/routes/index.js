@@ -1,4 +1,5 @@
 const admin = require("./admin");
+const cashier = require('./cashier')
 const category = require("./category");
 const subCategory = require("./subCategory");
 const product = require("./product");
@@ -8,6 +9,7 @@ const transactionProduct = require("./transactionProduct");
 
 module.exports = {
   admin,
+  cashier,
   category,
   subCategory,
   product,

@@ -20,6 +20,7 @@ app.get("/api", (req, res) => {
 });
 
 app.use("/admin", routes.admin);
+app.use("/cashier",routes.cashier);
 app.use("/categories", routes.category);
 app.use("/subcategories", routes.subCategory);
 app.use("/product", routes.product);
