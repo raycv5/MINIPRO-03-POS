@@ -3,7 +3,9 @@ const { Product, Sub_Category, Category } = require("../models");
 module.exports = {
    getAllProduct: async (req, res) => {
       try {
-         const products = await Product.findAll();
+         const products = await Product.findAll({
+            order: [["createdAt", "DESC"]],
+         });
          res.status(200).send(products);
       } catch (error) {
          res.status(400).send({ message: error.message });
@@ -82,7 +84,7 @@ module.exports = {
    },
    editProduct: async (req, res) => {
       try {
-         await Product.update({
+         await Product.update(req.body, {
             where: {
                id: req.params.id,
             },
@@ -99,6 +101,7 @@ module.exports = {
                id: req.params.id,
             },
          });
+         res.status(400).send("Product deleted");
       } catch (error) {
          res.status(400).send({ message: error.message });
       }
