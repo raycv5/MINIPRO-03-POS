@@ -1,4 +1,5 @@
 const { Cart, Product } = require("../models");
+const db = require("../models");
 
 module.exports = {
   getAll: async (req, res) => {
@@ -28,24 +29,33 @@ module.exports = {
   },
   add: async (req, res) => {
     const { ProductId, CashierId } = req.body;
+    const t = await db.sequelize.transaction();
+
     try {
-      await Cart.create({ ProductId, CashierId });
+      await Cart.create({ ProductId, CashierId }, { transaction: t });
 
       const product = await Product.findOne({ where: { id: ProductId } });
+
+      if (!product) return res.status(400).send("Product not found");
+
       const productAdded = 1;
       await Product.update(
         {
           stock_quantity: product.dataValues.stock_quantity - productAdded,
         },
-        { where: { id: ProductId } }
+        { where: { id: ProductId }, transaction: t }
       );
+      await t.commit();
       res.status(200).send("Item added to cart");
     } catch (err) {
+      await t.rollback();
       console.log(err);
       res.status(400).send({ message: err.message });
     }
   },
   delete: async (req, res) => {
+    const t = await db.sequelize.transaction();
+
     try {
       const cartProduct = await Cart.findOne({
         where: { id: req.params.id },
@@ -59,21 +69,26 @@ module.exports = {
           stock_quantity:
             cartProduct.dataValues.Product.stock_quantity + productQty,
         },
-        { where: { id: cartProduct.dataValues.ProductId } }
+        { where: { id: cartProduct.dataValues.ProductId }, transaction: t }
       );
 
       await Cart.destroy({
         where: {
           id: req.params.id,
         },
+        transaction: t,
       });
+      await t.commit();
       res.status(200).send("Item deleted");
     } catch (err) {
+      await t.rollback();
       console.log(err);
       res.status(400).send({ message: err.message });
     }
   },
   increment: async (req, res) => {
+    const t = await db.sequelize.transaction();
+
     try {
       const productQty = await Cart.findOne({
         where: {
@@ -96,22 +111,26 @@ module.exports = {
           where: {
             id: req.params.id,
           },
+          transaction: t,
         }
       );
       await Product.update(
         {
           stock_quantity: product.dataValues.stock_quantity - newQty,
         },
-        { where: { id: productQty.dataValues.ProductId } }
+        { where: { id: productQty.dataValues.ProductId }, transaction: t }
       );
-
+      await t.commit();
       res.status(200).send("Quantity updated");
     } catch (err) {
+      await t.rollback();
       console.log(err);
       res.status(400).send({ message: err.message });
     }
   },
   decrement: async (req, res) => {
+    const t = await db.sequelize.transaction();
+
     try {
       const productQty = await Cart.findOne({
         where: {
@@ -124,7 +143,7 @@ module.exports = {
       const newQty = 1;
       await Cart.update(
         { quantity: productQty.dataValues.quantity - newQty },
-        { where: { id: req.params.id } }
+        { where: { id: req.params.id }, transaction: t }
       );
 
       const product = await Product.findOne({
@@ -134,10 +153,12 @@ module.exports = {
         {
           stock_quantity: product.dataValues.stock_quantity + newQty,
         },
-        { where: { id: productQty.dataValues.ProductId } }
+        { where: { id: productQty.dataValues.ProductId }, transaction: t }
       );
+      await t.commit();
       res.status(200).send("Quantity updated");
     } catch (err) {
+      await t.rollback();
       console.log(err);
       res.status(400).send({ message: err.message });
     }
