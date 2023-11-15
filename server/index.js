@@ -20,15 +20,16 @@ app.get("/api", (req, res) => {
 });
 
 app.use("/admin", routes.admin);
-app.use("/cashier",routes.cashier);
+app.use("/cashier", routes.cashier);
 app.use("/categories", routes.category);
 app.use("/subcategories", routes.subCategory);
 app.use("/product", routes.product);
 app.use("/payment", routes.payment);
 app.use("/transactions", routes.transaction);
 app.use("/transaction-products", routes.transactionProduct);
+app.use("/carts", routes.cart);
 
 app.listen(PORT, () => {
-  //  db.sequelize.sync({ alter: true });
+  // db.sequelize.sync({ alter: true });
   console.log(`Server running on PORT ${PORT}`);
 });
