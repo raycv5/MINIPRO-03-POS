@@ -51,11 +51,11 @@ module.exports = {
   },
   login: async (req, res) =>{
     try {
-        const {fullname, password} = req.body
+        const {email, password} = req.body
 
         const isUserExist = await Admin.findOne({
             where:{
-                fullname
+                email
             }
         })
         if (!isUserExist) {
@@ -65,8 +65,9 @@ module.exports = {
         }
 
         const isValid = await bcrypt.compare(password, isUserExist.password)
+
         if(!isValid) {
-            res.status(400).send({
+           return res.status(400).send({
                 message: 'incorrect password'
             })
         }
@@ -75,7 +76,7 @@ module.exports = {
         const token = jwt.sign(payload, 'Jcwd0208',{expiresIn:'1h'})
 
         res.status(200).send({
-            message: 'login success',
+            message: 'success',
             result: isUserExist,
             token
         })

@@ -1,4 +1,4 @@
-import { Button, Flex, VStack, Text } from "@chakra-ui/react";
+import {  Flex, VStack, Text } from "@chakra-ui/react";
 // import { Login } from "../components/landingpage/Login";
 import { TabsLogin } from "../components/landingpage/Tabs.Jsx";
 import { AiOutlineLogin } from "react-icons/ai";
@@ -35,11 +35,7 @@ export const LandingPage = () => {
                </Flex>
                <TabsLogin />
             </Flex>
-            <Button
-               colorScheme="orange"
-               w={{ base: "50%",sm:"70%", md: "50%", lg: "50%" }}>
-               Login
-            </Button>
+           
          </VStack>
       </VStack>
    );
