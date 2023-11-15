@@ -3,7 +3,7 @@ import MainContent from "../components/menu/MainContent";
 import Cart from "../components/menu/Cart";
 import Sidebar from "../components/menu/Sidebar";
 
-function Menu() {
+export const Menu = () => {
   return (
     <Grid
       templateAreas={"sidebar main cart"}
@@ -21,6 +21,4 @@ function Menu() {
       </GridItem>
     </Grid>
   );
-}
-
-export default Menu;
+};
