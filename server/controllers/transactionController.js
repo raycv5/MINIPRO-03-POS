@@ -4,6 +4,7 @@ const {
   Product,
   Transaction_Product,
 } = require("../models");
+const db = require("../models");
 
 module.exports = {
   getAll: async (req, res) => {
@@ -17,6 +18,7 @@ module.exports = {
   },
   post: async (req, res) => {
     const { PaymentMethodId, CashierId } = req.body;
+    const t = await db.sequelize.transaction();
     try {
       const cart = await Cart.findAll({
         where: { CashierId: CashierId, isActive: true },
@@ -29,24 +31,36 @@ module.exports = {
         totalPrice += item.Product.price * item.quantity;
       }
 
-      const transaction = await Transaction.create({
-        total_price: totalPrice,
-        PaymentMethodId: PaymentMethodId,
-        CashierId: CashierId,
-      });
+      const transaction = await Transaction.create(
+        {
+          total_price: totalPrice,
+          PaymentMethodId: PaymentMethodId,
+          CashierId: CashierId,
+        },
+        { transaction: t }
+      );
 
       for (let item of cart) {
-        await Transaction_Product.create({
-          quantity: item.quantity,
-          ProductId: item.ProductId,
-          TransactionId: transaction.id,
-        });
+        await Transaction_Product.create(
+          {
+            quantity: item.quantity,
+            ProductId: item.ProductId,
+            TransactionId: transaction.id,
+          },
+          { transaction: t }
+        );
       }
 
-      await Cart.update({ isActive: false }, { where: { isActive: true } });
+      await Cart.update(
+        { isActive: false },
+        { where: { isActive: true }, transaction: t }
+      );
+
+      await t.commit();
 
       res.status(200).send({ message: "Transaction Succeed" });
     } catch (err) {
+      await t.rollback();
       console.log(err);
       res.status(400).send({ message: err.message });
     }
