@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Cashier.belongsTo(models.Admin);
       Cashier.hasMany(models.Transaction);
+      Cashier.hasMany(models.Cart);
     }
   }
   Cashier.init(
