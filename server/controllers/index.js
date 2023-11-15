@@ -1,11 +1,12 @@
 const adminController = require("./adminController");
-const cashierController = require("./cashierControllerr")
+const cashierController = require("./cashierControllerr");
 const categoryController = require("./categoryController");
 const subCategoryController = require("./subCategoryController");
 const productController = require("./productController");
 const paymentController = require("./paymentController");
 const transactionController = require("./transactionController");
 const transactionProductController = require("./transactionProductController");
+const cartController = require("./cartController");
 
 module.exports = {
   adminController,
@@ -16,4 +17,5 @@ module.exports = {
   paymentController,
   transactionController,
   transactionProductController,
+  cartController,
 };
