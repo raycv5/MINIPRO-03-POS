@@ -11,7 +11,7 @@ const verifyAndFindCashierById = async (req, res, next) => {
         }
         token = token.split(' ')[1];
 
-        const decodedToken = jwt.verify(token, 'Jcwd0208');
+        const decodedToken = jwt.verify(token, 'minpro02');
 
         const cashierId = decodedToken.id;
 

@@ -12,18 +12,18 @@ import {
 import * as Yup from "yup";
 import axios from "axios";
 
-
-export const LoginAdmin = () => {
+export const LoginCashier = () => {
     const toast = useToast()
   const validationSchema = Yup.object({
-    email: Yup.string().email("Invalid email format").required("Email is required"),
+    email: Yup.string().email("Invalid email address").required("Email is required"),
     password: Yup.string().required("Password is required"),
   });
   
   const handleSubmit = async (values) => { 
     try {
-      const response = await axios.post('http://localhost:2000/admin/login', values);
+      const response = await axios.post('http://localhost:2000/cashier/login', values);
       console.log(response)
+
       if (!response.data) {
         console.error( response.data);
          toast({
@@ -37,10 +37,9 @@ export const LoginAdmin = () => {
       
       } else {
          console.log('Login successful');
-        localStorage.setItem("tokenAdmin", response.data.token);
-         // dispatch(setAdminData(response.data));
+        localStorage.setItem("tokenCashier", response.data.token);
         toast({
-            title: "success",
+            title: "succes",
             description: 'Login success',
             status: "success",
             duration: 3000,
@@ -130,3 +129,5 @@ export const LoginAdmin = () => {
     </>
   );
 };
+
+

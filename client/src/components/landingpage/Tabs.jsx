@@ -6,11 +6,13 @@ import {
    Tab,
    TabIndicator,
 } from "@chakra-ui/react";
-import { Login } from "./Login";
+import { LoginAdmin } from "./Login";
+import { LoginCashier } from "./loginCashier";
+
 
 export const TabsLogin = () => {
    return (
-      <Tabs isFitted variant="unstyled" w={"100%"} h={"100%"}>
+      <Tabs isFitted variant="unstyled" w={"100%"} h={"100%"} >
          <TabList>
             <Tab>Admin</Tab>
             <Tab>Cashier</Tab>
@@ -23,10 +25,10 @@ export const TabsLogin = () => {
          />
          <TabPanels>
             <TabPanel>
-               <Login />
+               <LoginAdmin />
             </TabPanel>
             <TabPanel>
-               <Login />
+               <LoginCashier />
             </TabPanel>
          </TabPanels>
       </Tabs>
