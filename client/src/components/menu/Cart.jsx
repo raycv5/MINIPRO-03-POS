@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import {
   Box,
   Button,
@@ -10,19 +11,53 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 import { AiFillMinusCircle, AiFillPlusCircle } from "react-icons/ai";
 import { BiSolidTrashAlt } from "react-icons/bi";
+import axios from "axios";
 
-const items = [
-  {
-    name: "Burger Kelinci",
-    price: "50.000",
-    image:
-      "https://asset.kompas.com/crops/JFC1_i_OaGvcNEviEw4WKk-r3qQ=/12x51:892x637/750x500/data/photo/2022/03/05/622358ed771fb.jpg",
-  },
-];
+function Cart({ getProducts }) {
+  const [cart, setCart] = useState({});
 
-function Cart() {
+  const getCart = async () => {
+    const response = await axios.get(`http://localhost:2000/carts/1`);
+    setCart(response.data);
+  };
+
+  const handleIncrement = async (id) => {
+    try {
+      await axios.patch(`http://localhost:2000/carts/increment/${id}`);
+      getCart();
+      getProducts();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleDecrement = async (id) => {
+    try {
+      await axios.patch(`http://localhost:2000/carts/decrement/${id}`);
+      getCart();
+      getProducts();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:2000/carts/${id}`);
+      getCart();
+      getProducts();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getCart();
+  }, []);
+
   return (
     <Grid
       bgColor="white"
@@ -55,30 +90,41 @@ function Cart() {
               },
             }}
           >
-            {items.map((item, idx) => {
+            {cart?.items?.map((item) => {
               return (
                 <Flex
-                  key={idx}
+                  key={item.id}
                   justifyContent="space-between"
                   bgColor="blackAlpha.200"
+                  border="1px"
+                  borderColor="white"
                   padding="2%"
                   rounded="xl"
                   marginTop="10px"
+                  _hover={{
+                    bgColor: "orange.100",
+                    borderColor: "orange",
+                  }}
                 >
                   <Stack direction="row">
                     <Image
-                      src={item.image}
+                      src="https://asset.kompas.com/crops/JFC1_i_OaGvcNEviEw4WKk-r3qQ=/12x51:892x637/750x500/data/photo/2022/03/05/622358ed771fb.jpg"
                       boxSize="80px"
                       objectFit="cover"
                       rounded="xl"
                     />
                     <Flex flexDirection="column">
-                      <Text fontWeight="bold">{item.name}</Text>
-                      <Text fontWeight="semibold">{item.price}</Text>
+                      <Text fontWeight="bold">{item.Product.name}</Text>
+                      <Text fontWeight="semibold">
+                        {item?.Product?.price.toLocaleString("id-ID", {
+                          style: "currency",
+                          currency: "IDR",
+                        })}
+                      </Text>
                       <Text>
                         x{" "}
                         <Text as={"span"} fontWeight={"bold"}>
-                          1
+                          {item.quantity}
                         </Text>
                       </Text>
                     </Flex>
@@ -89,15 +135,30 @@ function Cart() {
                     alignItems="end"
                   >
                     <Stack direction="row" alignItems="center">
-                      <Text _hover={{ color: "orange" }} cursor="pointer">
+                      {/* ----- DECREMENT ----- */}
+                      <Text
+                        _hover={{ color: "orange" }}
+                        cursor="pointer"
+                        onClick={() => handleDecrement(item.id)}
+                      >
                         <AiFillMinusCircle size="20" />
                       </Text>
-                      <Text>1</Text>
-                      <Text _hover={{ color: "orange" }} cursor="pointer">
+                      <Text>{item.quantity}</Text>
+                      {/* ----- INCREMENT ----- */}
+                      <Text
+                        _hover={{ color: "orange" }}
+                        cursor="pointer"
+                        onClick={() => handleIncrement(item.id)}
+                      >
                         <AiFillPlusCircle size="20" />
                       </Text>
                     </Stack>
-                    <Text cursor="pointer" _hover={{ color: "red.600" }}>
+                    {/* ----- DELETE ----- */}
+                    <Text
+                      cursor="pointer"
+                      _hover={{ color: "red.600" }}
+                      onClick={() => handleDelete(item.id)}
+                    >
                       <BiSolidTrashAlt size="20" />
                     </Text>
                   </Flex>
@@ -122,11 +183,16 @@ function Cart() {
               <Text>
                 Items (
                 <Text as={"span"} fontWeight="semibold">
-                  1
+                  {cart?.items?.length}
                 </Text>
                 )
               </Text>
-              <Text fontWeight="semibold">50.000</Text>
+              <Text fontWeight="semibold">
+                {cart?.total_price?.toLocaleString("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                })}
+              </Text>
             </Flex>
             <Flex justifyContent="space-between">
               <Text>Discount</Text>
@@ -140,7 +206,12 @@ function Cart() {
               marginY="6px"
             >
               <Text>Total</Text>
-              <Text>50.000</Text>
+              <Text>
+                {cart?.total_price?.toLocaleString("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                })}
+              </Text>
             </Flex>
           </Box>
           <Box>

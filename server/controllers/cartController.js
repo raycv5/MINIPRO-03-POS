@@ -32,13 +32,24 @@ module.exports = {
     const t = await db.sequelize.transaction();
 
     try {
-      await Cart.create({ ProductId, CashierId }, { transaction: t });
+      const isExist = await Cart.findOne({
+        where: { ProductId: ProductId, isActive: true },
+      });
 
       const product = await Product.findOne({ where: { id: ProductId } });
-
       if (!product) return res.status(400).send("Product not found");
 
       const productAdded = 1;
+
+      if (!isExist) {
+        await Cart.create({ ProductId, CashierId }, { transaction: t });
+      } else {
+        await Cart.update(
+          { quantity: isExist.quantity + productAdded },
+          { where: { ProductId: ProductId } }
+        );
+      }
+
       await Product.update(
         {
           stock_quantity: product.dataValues.stock_quantity - productAdded,
