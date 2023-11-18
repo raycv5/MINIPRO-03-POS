@@ -25,6 +25,7 @@ function MainContent({
       />
     </Flex>
   );
+
 }
 
 export default MainContent;

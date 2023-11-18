@@ -6,9 +6,12 @@ import { DasboardAdminPages } from "./pages/DashboardAdmin";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setAdminData } from "./Redux/AdminSlice";
+import { categoryData } from "./redux/categorySlice";
+import { subCategoryData } from "./redux/subCategorySlice";
 import { setCashierData } from "./Redux/CashierSlice";
-import axios from "axios";
 import SuccessTransaction from "./pages/SuccessTransaction";
+import axios from "axios";
+
 
 const router = createBrowserRouter([
   { path: "/", element: <LandingPage /> },
@@ -23,6 +26,29 @@ function App() {
   const tokenAdmin = localStorage.getItem("tokenAdmin");
   const tokenCashier = localStorage.getItem("tokenCashier");
   const dispatch = useDispatch();
+
+const getAllCategories = async () => {
+      try {
+         const categories = await axios.get(
+            `http://localhost:2000/categories?name=`
+         );
+         dispatch(categoryData(categories.data));
+      } catch (error) {
+         console.log(error);
+      }
+   };
+
+   const getAllSubCategories = async () => {
+      try {
+         const subCategories = await axios.get(
+            `http://localhost:2000/subcategories?name=`
+         );
+         dispatch(subCategoryData(subCategories.data));
+         console.log(subCategories)
+      } catch (error) {
+         console.log(error);
+      }
+   };
 
   const keepLogin = async () => {
     try {
@@ -56,10 +82,16 @@ function App() {
     }
   };
 
+   useEffect(() => {
+          getAllCategories();
+      getAllSubCategories();
+   }, [getAllCategories]);
+
   useEffect(() => {
     keepLogin();
     keepLoginCashier();
   }, []);
+  
   return (
     <>
       <RouterProvider router={router} />

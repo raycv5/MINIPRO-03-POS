@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
 import {
-  Box,
-  Flex,
-  HStack,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Text,
+   Box,
+   Flex,
+   HStack,
+   Input,
+   InputGroup,
+   InputRightElement,
+   Text,
 } from "@chakra-ui/react";
 import { FiSearch } from "react-icons/fi";
 import { useEffect, useState } from "react";

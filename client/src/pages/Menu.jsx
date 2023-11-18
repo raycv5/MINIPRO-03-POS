@@ -21,6 +21,7 @@ export const Menu = () => {
     try {
       const response = await axios.get(url);
       setProduct(response?.data);
+      console.log(response)
     } catch (err) {
       console.error("Error fetching products:", err);
     }
