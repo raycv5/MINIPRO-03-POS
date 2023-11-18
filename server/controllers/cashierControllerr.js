@@ -42,7 +42,7 @@ module.exports={
             });
 
             if (!isCashierExist) {
-                return res.status(404).json({
+                return res.status(404).send({
                     message: 'User not found'
                 });
             }
@@ -51,22 +51,20 @@ module.exports={
             const isValid = await bcrypt.compare(password, isCashierExist.password);
     
             if (!isValid) {
-                return res.status(400).json({
-                    message: 'Incorrect password'
-                });
+                return res.status(401).send('incorect password');
             }
 
             const payload = { id: isCashierExist.id };
-            const token = jwt.sign(payload, 'Jcwd0208', { expiresIn: '1h' });
+            const token = jwt.sign(payload, 'minpro02', { expiresIn: '1h' });
     
-            res.status(200).json({
+            res.status(200).send({
                 message: 'Login success',
                 result: isCashierExist,
                 token: token
             });
         } catch (err) {
             console.error(err);
-            res.status(500).json({
+            res.status(400).send({
                 message: 'Internal server error'
             });
         }

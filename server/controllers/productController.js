@@ -189,4 +189,28 @@ module.exports = {
          res.status(400).send({ message: error.message });
       }
    },
+     getProductById: async (req, res) => {
+    try {
+      const response = await Product.findAll({
+        where: { CategoryId: req.params.id },
+      });
+      res.status(200).send(response);
+    } catch (err) {
+      res.status(400).send({ message: error.message });
+    }
+  },
+  getByKeywords: async (req, res) => {
+    try {
+      const response = await Product.findAll({
+        where: {
+          name: {
+            [Op.like]: `%${req.params.id}%`,
+          },
+        },
+      });
+      res.status(200).send(response);
+    } catch (err) {
+      res.status(400).send({ message: err.message });
+    }
+  },
 };

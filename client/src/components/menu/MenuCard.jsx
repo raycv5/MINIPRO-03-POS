@@ -2,17 +2,19 @@
 import { Box, Flex, Grid, GridItem, Image, Text } from "@chakra-ui/react";
 import axios from "axios";
 
-function MenuCard({ product, getProducts }) {
-   const filteredProducts = product.filter((item) => item.isDisabled === false);
-   const handleClick = async (id) => {
-      const data = { ProductId: id, CashierId: 1 };
-      try {
-         await axios.post("http://localhost:2000/carts/", data);
-         getProducts();
-      } catch (err) {
-         console.log(err);
-      }
-   };
+
+function MenuCard({ product, getProducts, getCarts }) {
+  const filteredProducts = product.filter((item) => item.isDisabled === false);
+  const handleClick = async (id) => {
+    const data = { ProductId: id, CashierId: 1 };
+    try {
+      await axios.post("http://localhost:2000/carts/", data);
+      getProducts();
+      getCarts();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
    return (
       <>

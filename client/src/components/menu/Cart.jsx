@@ -14,20 +14,34 @@ import {
 import { useEffect, useState } from "react";
 import { AiFillMinusCircle, AiFillPlusCircle } from "react-icons/ai";
 import { BiSolidTrashAlt } from "react-icons/bi";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-function Cart({ getProducts }) {
-  const [cart, setCart] = useState({});
+function Cart({ getProducts, getCarts, cart }) {
+  const [payment, setPayment] = useState("");
+  const navigate = useNavigate();
 
-  const getCart = async () => {
-    const response = await axios.get(`http://localhost:2000/carts/1`);
-    setCart(response.data);
+  const handleSubmit = async () => {
+    const data = { PaymentMethodId: payment, CashierId: 1 };
+    const transaction = await axios.post(
+      "http://localhost:2000/transactions",
+      data
+    );
+    const transactionId = transaction?.data?.data?.id;
+
+    if (transactionId) {
+      navigate(`/transaction/${transactionId}`);
+    }
+  };
+
+  const handlePayment = (id) => {
+    setPayment(id);
   };
 
   const handleIncrement = async (id) => {
     try {
       await axios.patch(`http://localhost:2000/carts/increment/${id}`);
-      getCart();
+      getCarts();
       getProducts();
     } catch (err) {
       console.log(err);
@@ -37,7 +51,7 @@ function Cart({ getProducts }) {
   const handleDecrement = async (id) => {
     try {
       await axios.patch(`http://localhost:2000/carts/decrement/${id}`);
-      getCart();
+      getCarts();
       getProducts();
     } catch (err) {
       console.log(err);
@@ -47,7 +61,7 @@ function Cart({ getProducts }) {
   const handleDelete = async (id) => {
     try {
       await axios.delete(`http://localhost:2000/carts/${id}`);
-      getCart();
+      getCarts();
       getProducts();
     } catch (err) {
       console.log(err);
@@ -55,7 +69,7 @@ function Cart({ getProducts }) {
   };
 
   useEffect(() => {
-    getCart();
+    getCarts();
   }, []);
 
   return (
@@ -216,7 +230,7 @@ function Cart({ getProducts }) {
           </Box>
           <Box>
             <Text fontWeight="bold">Payment Method</Text>
-            <RadioGroup>
+            <RadioGroup onChange={handlePayment}>
               <Flex justifyContent="space-between" padding="2%">
                 <Radio value="1">Cash</Radio>
                 <Radio value="2">Debit</Radio>
@@ -229,8 +243,9 @@ function Cart({ getProducts }) {
               width="100%"
               bgColor="orange"
               _hover={{ bgColor: "orange.200" }}
+              onClick={handleSubmit}
             >
-              Print Bills
+              Checkout
             </Button>
           </Box>
         </Flex>

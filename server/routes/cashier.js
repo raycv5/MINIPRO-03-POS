@@ -1,6 +1,7 @@
 const router =require('express').Router();
 const { cashierController} = require("../controllers");
 const verifyAndFindCashierById = require('../middleware/cashierAuth');
+const { checkLogin } = require('../middleware/validator');
 
 
 
