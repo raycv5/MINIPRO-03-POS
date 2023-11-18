@@ -1,12 +1,27 @@
-import { Flex } from "@chakra-ui/react";
-import { ProductCategory } from "./ProductCategory";
-import { AllMenu } from "./AllMenu";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import MainContent from "../menu/MainContent";
 
 export const ProductMenuAdmin = () => {
+   const [product, setProduct] = useState([]);
+
+   const getProducts = async () => {
+      try {
+         const response = await axios.get("http://localhost:2000/product?name=");
+         setProduct(response?.data);
+      } catch (err) {
+         console.error("Error fetching products:", err);
+      }
+   };
+
+   console.log(product);
+
+   useEffect(() => {
+      getProducts();
+   }, []);
    return (
-      <Flex gap={"100px"} w={"100%"} h={"500px"} alignItems={"start"}>
-         <ProductCategory />
-         <AllMenu />
-      </Flex>
+      <>
+         <MainContent product={product} />
+      </>
    );
 };

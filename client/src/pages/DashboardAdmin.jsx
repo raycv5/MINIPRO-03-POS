@@ -18,6 +18,10 @@ import { AddProduct } from "../components/dashboard-admin/addProduct";
 export const DasboardAdminPages = () => {
    const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
    const { isOpen, onOpen, onClose } = useDisclosure();
+   const [valueId, setId] = useState();
+   const handleEdit = (valuesId) => {
+      setId(valuesId);
+   };
    const sidebar = [
       { name: "Home", icon: <GoHome /> },
       { name: "Reports", icon: <AiOutlineStock /> },
@@ -87,11 +91,18 @@ export const DasboardAdminPages = () => {
                   ) : main == 3 ? (
                      <ProductMenuAdmin />
                   ) : main == 4 ? (
-                     <AddCategory />
+                     <AddCategory handleEdit={handleEdit} valueId={valueId} />
                   ) : main == 5 ? (
-                     <AddSubCategory />
+                     <AddSubCategory
+                        handleEdit={handleEdit}
+                        valueId={valueId}
+                     />
                   ) : main == 6 ? (
-                     <AddProduct />
+                     <AddProduct
+                        setMain={setMain}
+                        handleEdit={handleEdit}
+                        valueId={valueId}
+                     />
                   ) : (
                      main
                   )}

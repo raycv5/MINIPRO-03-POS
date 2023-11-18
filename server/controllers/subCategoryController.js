@@ -1,11 +1,33 @@
 const { Sub_Category, Category, Product } = require("../models");
-
+const { Op } = require("sequelize");
 
 module.exports = {
    getAllSubCategory: async (req, res) => {
       try {
-
-         const subCategories = await Sub_Category.findAll();
+         const { name } = req.query;
+         const where = {};
+         if (name) {
+            where.name = name;
+         }
+         const subCategories = await Sub_Category.findAll({
+            where: {
+               name: {
+                  [Op.like]: `%${name}%`,
+               },
+               isDeleted: false,
+            },
+            include: [
+               {
+                  model: Category,
+                  attributes: ["id", "name"],
+               },
+               {
+                  model: Product,
+                  attributes: ["name"],
+               },
+            ],
+            // order: [["name", "ASC"]],
+         });
          res.status(200).send(subCategories);
       } catch (error) {
          res.status(400).send({ message: error.message });
@@ -33,6 +55,8 @@ module.exports = {
          const subCategoryExist = await Sub_Category.findOne({
             where: {
                name,
+               isDeleted: false,
+               CategoryId,
             },
          });
          if (subCategoryExist) {
@@ -63,11 +87,14 @@ module.exports = {
    },
    deleteSubCategory: async (req, res) => {
       try {
-         await Sub_Category.delete({
-            where: {
-               id: req.params.id,
-            },
-         });
+         await Sub_Category.update(
+            { isDeleted: true },
+            {
+               where: {
+                  id: req.params.id,
+               },
+            }
+         );
          res.status(200).send("SubCategory deleted successfully");
       } catch (error) {
          res.status(400).send({ message: error.message });

@@ -15,13 +15,17 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Sub_Category.init(
-    {
-      name: DataTypes.STRING,
-    },
-    {
-      sequelize,
-      modelName: "Sub_Category",
-    }
+     {
+        name: DataTypes.STRING,
+        isDeleted: {
+           type: DataTypes.BOOLEAN,
+           defaultValue: false,
+        },
+     },
+     {
+        sequelize,
+        modelName: "Sub_Category",
+     }
   );
   return Sub_Category;
 };

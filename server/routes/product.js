@@ -1,13 +1,18 @@
 const router = require("express").Router();
 const { productController } = require("../controllers");
+const { productUpload } = require("../middleware/multer");
 
 router.get("/", productController.getAllProduct);
 router.get("/product-categories", productController.getProductBySubCategory);
-router.post("/", productController.addProduct);
+router.post("/", productUpload().single("file"), productController.addProduct);
 router.get("/count-products", productController.countProduct);
 router.get("/:id", productController.getById);
-router.patch("/:id", productController.editProduct);
-router.delete("/:id", productController.deleteProduct);
-
+router.patch("/delete/:id", productController.deleteProduct);
+router.patch("/disabled/:id", productController.isDisabled);
+router.patch(
+   "/:id",
+   productUpload().single("file"),
+   productController.editProduct
+);
 
 module.exports = router;

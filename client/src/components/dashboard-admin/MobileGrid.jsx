@@ -3,6 +3,9 @@ import { Grid, GridItem } from "@chakra-ui/react";
 import { Navbar } from "./Navbar";
 import { useState } from "react";
 import { AddCategory } from "./addCategory";
+import { ProductMenuAdmin } from "./ProductMenuAdmin";
+import { AddSubCategory } from "./addSubcategory";
+import { AddProduct } from "./addProduct";
 
 export const MobileGrid = (props) => {
    const [search, setSearch] = useState("");
@@ -31,7 +34,21 @@ export const MobileGrid = (props) => {
             />
          </GridItem>
          <GridItem p="3%" area={"main"}>
-            {props.main == 4 ? <AddCategory /> : props.main}
+            {props.main == 1 ? (
+               props.main
+            ) : props.main == 2 ? (
+               props.main
+            ) : props.main == 3 ? (
+               <ProductMenuAdmin />
+            ) : props.main == 4 ? (
+               <AddCategory />
+            ) : props.main == 5 ? (
+               <AddSubCategory />
+            ) : props.main == 6 ? (
+               <AddProduct />
+            ) : (
+               props.main
+            )}
          </GridItem>
       </Grid>
    );

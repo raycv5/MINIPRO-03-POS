@@ -10,8 +10,9 @@ export const Menu = () => {
 
   const getProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:2000/product");
+      const response = await axios.get("http://localhost:2000/product?name=");
       setProduct(response?.data);
+      console.log(response)
     } catch (err) {
       console.error("Error fetching products:", err);
     }
