@@ -12,7 +12,6 @@ import { setCashierData } from "./Redux/CashierSlice";
 import SuccessTransaction from "./pages/SuccessTransaction";
 import axios from "axios";
 
-
 const router = createBrowserRouter([
   { path: "/", element: <LandingPage /> },
   { path: "/linechart", element: <Linechart /> },
@@ -27,28 +26,28 @@ function App() {
   const tokenCashier = localStorage.getItem("tokenCashier");
   const dispatch = useDispatch();
 
-const getAllCategories = async () => {
-      try {
-         const categories = await axios.get(
-            `http://localhost:2000/categories?name=`
-         );
-         dispatch(categoryData(categories.data));
-      } catch (error) {
-         console.log(error);
-      }
-   };
+  const getAllCategories = async () => {
+    try {
+      const categories = await axios.get(
+        `http://localhost:2000/categories?name=`
+      );
+      dispatch(categoryData(categories.data));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-   const getAllSubCategories = async () => {
-      try {
-         const subCategories = await axios.get(
-            `http://localhost:2000/subcategories?name=`
-         );
-         dispatch(subCategoryData(subCategories.data));
-         console.log(subCategories)
-      } catch (error) {
-         console.log(error);
-      }
-   };
+  const getAllSubCategories = async () => {
+    try {
+      const subCategories = await axios.get(
+        `http://localhost:2000/subcategories?name=`
+      );
+      dispatch(subCategoryData(subCategories.data));
+      console.log(subCategories);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const keepLogin = async () => {
     try {
@@ -82,16 +81,16 @@ const getAllCategories = async () => {
     }
   };
 
-   useEffect(() => {
-          getAllCategories();
-      getAllSubCategories();
-   }, [getAllCategories]);
+  useEffect(() => {
+    getAllCategories();
+    getAllSubCategories();
+  }, [getAllCategories, getAllSubCategories]);
 
   useEffect(() => {
     keepLogin();
     keepLoginCashier();
   }, []);
-  
+
   return (
     <>
       <RouterProvider router={router} />

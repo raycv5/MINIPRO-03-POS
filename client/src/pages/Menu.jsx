@@ -14,14 +14,14 @@ export const Menu = () => {
   const { categoryId } = useParams();
 
   const getProducts = async () => {
-    let url = "http://localhost:2000/product";
+    let url = "http://localhost:2000/product?name=";
     if (categoryId) {
-      url += `/category/${categoryId}`;
+      url = `http://localhost:2000/product/category/${categoryId}`;
     }
     try {
       const response = await axios.get(url);
       setProduct(response?.data);
-      console.log(response)
+      console.log(response);
     } catch (err) {
       console.error("Error fetching products:", err);
     }
