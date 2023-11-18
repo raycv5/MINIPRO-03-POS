@@ -27,9 +27,9 @@ function Sidebar() {
           letterSpacing="tighter"
           color="orange"
         >
-          LO
+          كا
           <Text as={"span"} color="black">
-            GO
+            شير
           </Text>
         </Text>
         <Flex flexDirection="column" gap="30" alignItems="center">
