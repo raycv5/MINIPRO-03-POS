@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import {
   Box,
   Flex,
@@ -8,11 +9,33 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { FiSearch } from "react-icons/fi";
-import { FaHamburger } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const items = [{ text: "Burger", icons: <FaHamburger size="25" /> }];
+function Navbar({ setCategory, categoryId }) {
+  const [categories, setCategories] = useState([]);
+  const navigate = useNavigate();
 
-function Navbar() {
+  const handleCategory = (id) => {
+    setCategory(id);
+    navigate(`/home/category/${id}`);
+    window.location.reload();
+  };
+
+  const getData = async () => {
+    try {
+      const response = await axios.get("http://localhost:2000/categories");
+      setCategories(response?.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <>
       <Box>
@@ -32,24 +55,26 @@ function Navbar() {
           </InputGroup>
         </Flex>
         <HStack padding="1% 3%" spacing="5" alignItems="center">
-          {items.map((item, idx) => {
+          {categories?.map((item) => {
             return (
               <Flex
-                key={idx}
-                bgColor="white"
-                rounded="xl"
-                padding="2%"
-                flexDirection="column"
+                key={item.id}
                 alignItems="center"
+                bgColor={categoryId == item.id ? "orange" : "white"}
                 border="1px"
                 borderColor="gray.200"
+                cursor="pointer"
+                flexDirection="column"
+                rounded="xl"
+                padding="2%"
                 _hover={{
                   bgColor: "orange.100",
                   borderColor: "orange",
                 }}
+                onClick={() => handleCategory(item.id)}
               >
                 <Text>{item.icons}</Text>
-                <Text fontWeight="semibold">{item.text}</Text>
+                <Text fontWeight="semibold">{item.name}</Text>
               </Flex>
             );
           })}
