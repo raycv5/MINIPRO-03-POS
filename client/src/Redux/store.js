@@ -1,10 +1,11 @@
-import { configureStore } from '@reduxjs/toolkit'
-import AdminSlice from './AdminSlice'
-import CashierSlice from './CashierSlice'
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { categorySlice } from "./categorySlice";
+import { subCategorySlice } from "./subCategorySlice";
 
+const rootReducer = combineReducers({
+   categories: categorySlice.reducer,
+   subCategories: subCategorySlice.reducer,
+});
 export const store = configureStore({
-    reducer: {
-        admin: AdminSlice,
-        cashier: CashierSlice
-    }
-})
+   reducer: rootReducer,
+});

@@ -34,6 +34,8 @@ function Cart({ getProducts, getCarts, cart }) {
     }
   };
 
+  console.log(cart);
+
   const handlePayment = (id) => {
     setPayment(id);
   };
@@ -122,7 +124,7 @@ function Cart({ getProducts, getCarts, cart }) {
                 >
                   <Stack direction="row">
                     <Image
-                      src="https://asset.kompas.com/crops/JFC1_i_OaGvcNEviEw4WKk-r3qQ=/12x51:892x637/750x500/data/photo/2022/03/05/622358ed771fb.jpg"
+                      src={`http://localhost:2000/${item.Product.image}`}
                       boxSize="80px"
                       objectFit="cover"
                       rounded="xl"
