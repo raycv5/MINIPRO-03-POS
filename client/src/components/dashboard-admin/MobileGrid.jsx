@@ -6,6 +6,8 @@ import { AddCategory } from "./addCategory";
 import { ProductMenuAdmin } from "./ProductMenuAdmin";
 import { AddSubCategory } from "./addSubcategory";
 import { AddProduct } from "./addProduct";
+import { Reports } from "./Reports";
+import { Trash } from "./Trash";
 
 export const MobileGrid = (props) => {
    const [search, setSearch] = useState("");
@@ -34,20 +36,37 @@ export const MobileGrid = (props) => {
             />
          </GridItem>
          <GridItem p="3%" area={"main"}>
-            {props.main == 1 ? (
-               props.main
+            {props.main == 0 ? (
+               <ProductMenuAdmin />
+            ) : props.main == 1 ? (
+               <Reports />
             ) : props.main == 2 ? (
                props.main
             ) : props.main == 3 ? (
-               <ProductMenuAdmin />
+               <AddCategory
+                  handleEdit={props.handleEdit}
+                  valueId={props.valueId}
+               />
             ) : props.main == 4 ? (
-               <AddCategory />
+               <AddSubCategory
+                  fetchCategory={props.fetchCategory}
+                  handleEdit={props.handleEdit}
+                  valueId={props.valueId}
+                  filterCategory={props.filterCategory}
+                  filterSubCategory={props.filterSubCategory}
+               />
             ) : props.main == 5 ? (
-               <AddSubCategory />
-            ) : props.main == 6 ? (
-               <AddProduct />
+               <AddProduct
+                  fetchCategory={props.fetchCategory}
+                  fetchSubCategory={props.fetchSubCategory}
+                  setMain={props.setMain}
+                  handleEdit={props.handleEdit}
+                  valueId={props.valueId}
+                  filterCategory={props.filterCategory}
+                  filterSubCategory={props.filterSubCategory}
+               />
             ) : (
-               props.main
+               <Trash />
             )}
          </GridItem>
       </Grid>

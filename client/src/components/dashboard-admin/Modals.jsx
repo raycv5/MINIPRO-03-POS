@@ -14,6 +14,8 @@ export const Modals = ({
    find,
    handleSubmitDeleted,
    handleImage,
+   filterCategory,
+   filterSubCategory,
 }) => {
    const { isOpen, onOpen, onClose } = useDisclosure();
    const [modalType, setModalType] = useState(null);
@@ -34,6 +36,8 @@ export const Modals = ({
       if (modalType === "edited") {
          return (
             <EditedModals
+               filterCategory={filterCategory}
+               filterSubCategory={filterSubCategory}
                headers={headers}
                onClose={() => {
                   setModalType(null);

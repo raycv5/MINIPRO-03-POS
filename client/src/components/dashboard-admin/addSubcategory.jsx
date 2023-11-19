@@ -1,33 +1,22 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import {
-   Flex,
-   FormControl,
-   FormLabel,
-   FormHelperText,
-   Input,
-   Button,
-   Stack,
-   Select,
-   Text,
-   HStack,
-   InputRightElement,
-   InputGroup,
-   useToast,
-} from "@chakra-ui/react";
+import { Flex, Stack, HStack, useToast } from "@chakra-ui/react";
 import { Tables } from "./Tables";
-import { AiOutlinePlus } from "react-icons/ai";
-import { CiSearch } from "react-icons/ci";
+
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { useSelector } from "react-redux";
 import { Form, Formik } from "formik";
+import { FormAddSubCategory } from "./FromAddSubcategory";
+import { SearchSubCategory } from "./SearchSubCategory";
 
-export const AddSubCategory = ({ handleEdit, valueId }) => {
+export const AddSubCategory = ({
+   handleEdit,
+   valueId,
+   filterCategory,
+   fetchCategory,
+}) => {
    const [isSubmitting, setIsSubmitting] = useState(true);
    const toast = useToast();
-   const getAllCategories = useSelector((state) => state.categories.value);
-   // console.log(getAllCategories)
    const searchRef = useRef();
    const [searchSubCategory, setSearchSubCategory] = useState("");
    const [getSubCategory, setGetSubCategory] = useState([]);
@@ -42,8 +31,12 @@ export const AddSubCategory = ({ handleEdit, valueId }) => {
          const subCategories = await axios.get(
             `http://localhost:2000/subcategories?name=${searchSubCategory}`
          );
-         setGetSubCategory(subCategories.data);
+         const filterSubCategories = subCategories.data.filter(
+            (subCategory) => subCategory.isDeleted === false
+         );
+         setGetSubCategory(filterSubCategories);
          setIsSubmitting(false);
+         fetchCategory();
       } catch (error) {
          console.log(error);
       }
@@ -105,7 +98,7 @@ export const AddSubCategory = ({ handleEdit, valueId }) => {
          await axios.patch(
             `http://localhost:2000/subcategories/delete/${valueId}`
          );
-         findSubCategories()
+         findSubCategories();
          toast({
             title: "Success",
             description: "Subcategory has been deleted",
@@ -141,23 +134,11 @@ export const AddSubCategory = ({ handleEdit, valueId }) => {
             alignItems={"center"}
             gap={"20px"}
             justifyContent={"space-between"}>
-            <Stack>
-               <FormControl>
-                  <FormLabel>Search Subcategory</FormLabel>
-                  <InputGroup>
-                     <Input
-                        type="text"
-                        ref={searchRef}
-                        onChange={(e) => setSearchSubCategory(e.target.value)}
-                     />
-                     <InputRightElement as={"button"}>
-                        <CiSearch />
-                     </InputRightElement>
-                  </InputGroup>
-                  <FormHelperText>example : Bread</FormHelperText>
-               </FormControl>
-               <Text>Total SubCategory: {getSubCategory.length}</Text>
-            </Stack>
+            <SearchSubCategory
+               searchRef={searchRef}
+               getSubCategory={getSubCategory}
+               setSearchSubCategory={setSearchSubCategory}
+            />
             <HStack>
                <Formik
                   initialValues={subCategories}
@@ -169,57 +150,12 @@ export const AddSubCategory = ({ handleEdit, valueId }) => {
                      const { handleChange, values } = props;
                      return (
                         <Form>
-                           <Flex alignItems={"center"} gap={"20px"}>
-                              <FormControl>
-                                 <FormLabel>Add Sub Category</FormLabel>
-                                 <Input
-                                    type="text"
-                                    name="name"
-                                    isRequired
-                                    onChange={handleChange}
-                                    value={values.name}
-                                 />
-                                 <FormHelperText>
-                                    example : Bread
-                                 </FormHelperText>
-                              </FormControl>
-                              <FormControl id="CategoryId" isRequired>
-                                 <FormLabel>Category</FormLabel>
-                                 <Select
-                                 placeholder="Select Category"
-                                    onChange={handleChange}
-                                    value={values.CategoryId}>
-                                    {getAllCategories?.map((categories) => (
-                                       <option
-                                          key={categories.id}
-                                          value={categories.id}>
-                                          {categories.name}
-                                       </option>
-                                    ))}
-                                 </Select>
-                                 <FormHelperText>
-                                    Choose category
-                                 </FormHelperText>
-                              </FormControl>
-                              <Stack>
-                                 {!isSubmitting ? (
-                                    <Button
-                                       type="submit"
-                                       bg={"orange"}
-                                       _hover={{ bg: "orange.300" }}>
-                                       <AiOutlinePlus /> Add Subcategory
-                                    </Button>
-                                 ) : (
-                                    <Button
-                                       isLoading={isSubmitting}
-                                       deletedCategory
-                                       loadingText="Loading"
-                                       variant="solid">
-                                       Submiting
-                                    </Button>
-                                 )}
-                              </Stack>
-                           </Flex>
+                           <FormAddSubCategory
+                              handleChange={handleChange}
+                              getAllCategories={filterCategory}
+                              values={values}
+                              isSubmitting={isSubmitting}
+                           />
                         </Form>
                      );
                   }}
@@ -227,6 +163,7 @@ export const AddSubCategory = ({ handleEdit, valueId }) => {
             </HStack>
          </Flex>
          <Tables
+            filterCategory={filterCategory}
             data={getSubCategory}
             find={findSubCategories}
             name="name"

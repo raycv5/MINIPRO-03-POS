@@ -10,12 +10,12 @@ router.get("/category/:id", productController.getProductById);
 router.get("/keywords/:id", productController.getByKeywords);
 router.get("/:id", productController.getById);
 router.patch("/delete/:id", productController.deleteProduct);
+router.patch("/remove/:id", productController.restoreProduct);
 router.patch("/disabled/:id", productController.isDisabled);
 router.patch(
    "/:id",
    productUpload().single("file"),
    productController.editProduct
 );
-
 
 module.exports = router;

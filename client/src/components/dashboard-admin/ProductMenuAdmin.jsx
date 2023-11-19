@@ -1,27 +1,33 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import axios from "axios";
-import MainContent from "../menu/MainContent";
+import Navbar from "../menu/Navbar";
 
-export const ProductMenuAdmin = () => {
-   const [product, setProduct] = useState([]);
+import { Box, Flex, Grid, GridItem, Image, Text } from "@chakra-ui/react";
+import MenuCard from "../menu/MenuCard";
 
-   const getProducts = async () => {
-      try {
-         const response = await axios.get("http://localhost:2000/product?name=");
-         setProduct(response?.data);
-      } catch (err) {
-         console.error("Error fetching products:", err);
-      }
-   };
-
-   console.log(product);
-
-   useEffect(() => {
-      getProducts();
-   }, []);
+export const ProductMenuAdmin = ({
+   product,
+   getProducts,
+   getCarts,
+   setCategory,
+   categoryId,
+}) => {
+   console.log(product)
    return (
       <>
-         <MainContent product={product} />
+         <Navbar
+            setCategory={setCategory}
+            getProducts={getProducts}
+            categoryId={categoryId}
+            route={"dashboard-admin"}
+         />
+         <MenuCard
+            product={product}
+            getProducts={getProducts}
+            categoryId={categoryId}
+         />
       </>
    );
 };

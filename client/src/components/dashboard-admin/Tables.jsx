@@ -11,9 +11,7 @@ import {
    Th,
    Flex,
    Text,
-   Image,
    Box,
-   VStack,
    SkeletonCircle,
    SkeletonText,
    Collapse,
@@ -24,12 +22,15 @@ import {
 import { Modals } from "./Modals";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Pagination } from "./Pagination";
 
 export const Tables = ({
    name,
    data,
    headers,
    count,
+   filterCategory,
+   filterSubCategory,
    handleImage,
    loading,
    handleEdit,
@@ -54,21 +55,27 @@ export const Tables = ({
          console.log(error);
       }
    };
+   const itemsPerPage = 5;
+   const [currentPage, setCurrentPage] = useState(0);
+   const handlePageClick = (data) => {
+      setCurrentPage(data.selected);
+   };
+   const offset = currentPage * itemsPerPage;
+   const paginatedItems = data?.slice(offset, offset + itemsPerPage);
+   
    useEffect(() => {
       find();
    }, []);
+
    return (
       <>
-         <Flex
-            w={"15%"}
-            gap={"20px"}
-            alignSelf={"end"}>
+         <Flex w={"15%"} gap={"20px"} alignSelf={"end"}>
             <Text>Sort</Text>
             <Select h={"30px"}></Select>
          </Flex>
          {!loading ? (
             <Collapse in={!loading} transition={{ enter: { duration: 2 } }}>
-               <TableContainer m={"0"}>
+               <TableContainer m={"0"} h={"100vh"}>
                   <Table variant="simple" size={"md"}>
                      <TableCaption>
                         Total {headers.first}: {count}
@@ -88,12 +95,14 @@ export const Tables = ({
                         </Tr>
                      </Thead>
                      <Tbody>
-                        {data?.length > 0 ? (
-                           data.map((item) => (
+                        {paginatedItems?.length > 0 ? (
+                           paginatedItems.map((item) => (
                               <Tr key={item.id}>
                                  <Td>{item[name]}</Td>
                                  <Td>
                                     <Modals
+                                       filterCategory={filterCategory}
+                                       filterSubCategory={filterSubCategory}
                                        find={find}
                                        isOpen={openModalId === item.id}
                                        onClose={handleCloseModal}
@@ -157,17 +166,16 @@ export const Tables = ({
                            ))
                         ) : (
                            <Tr key="no-data">
-                              <Td colSpan="4">
-                                 <Image
-                                    src="https://www.empoweryouth.com/assets/themes/ey/images/pages/jobs/not_found.png"
-                                    w={"100%"}
-                                    h={"100%"}
-                                 />
-                              </Td>
+                              <Td colSpan={"4"}>Item not found!</Td>
                            </Tr>
                         )}
                      </Tbody>
                   </Table>
+                  <Pagination
+                     totalSold={data}
+                     itemsPerPage={itemsPerPage}
+                     handlePageClick={handlePageClick}
+                  />
                </TableContainer>
             </Collapse>
          ) : (

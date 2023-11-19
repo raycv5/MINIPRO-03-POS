@@ -6,7 +6,6 @@ import {
    FormLabel,
    FormHelperText,
    Input,
-   Button,
    Stack,
    InputGroup,
    InputRightElement,
@@ -14,21 +13,16 @@ import {
    useToast,
 } from "@chakra-ui/react";
 import { Tables } from "./Tables";
-import { AiOutlinePlus } from "react-icons/ai";
 import { CiSearch } from "react-icons/ci";
 import { useEffect, useRef, useState } from "react";
-import * as Yup from "yup";
 import { Form, Formik } from "formik";
 import axios from "axios";
 import { FormCategory } from "./FormCategory";
-const categoriesSchema = Yup.object().shape({
-   name: Yup.string().required("Category name is required"),
-});
 export const AddCategory = ({ handleEdit, valueId }) => {
    const [getCategory, setGetCategory] = useState([]);
    const [searchCategory, setSearchCategory] = useState("");
-   const [isLoading, setLoading] = useState(true);
    const searchRef = useRef();
+   const [isLoading, setLoading] = useState(true);
    // eslint-disable-next-line no-unused-vars
    const [editedCategory, setEditedCategory] = useState({
       name: "",
@@ -39,10 +33,10 @@ export const AddCategory = ({ handleEdit, valueId }) => {
          await axios.patch(
             `http://localhost:2000/categories/delete/${valueId}`
          );
-         findCategories()
+         findCategories();
          toast({
             title: "Success",
-            description: "Category edit successfully",
+            description: "Category has been deleted",
             status: "success",
             duration: 5000,
             position: "top-left",
@@ -80,13 +74,15 @@ export const AddCategory = ({ handleEdit, valueId }) => {
          });
       }
    };
-
    const findCategories = async () => {
       try {
          const categories = await axios.get(
             `http://localhost:2000/categories?name=${searchCategory}`
          );
-         setGetCategory(categories.data);
+         const allCategory = categories.data.filter(
+            (category) => category.isDeleted === false
+         );
+         setGetCategory(allCategory);
          setLoading(false);
       } catch (error) {
          console.log(error);
@@ -157,7 +153,6 @@ export const AddCategory = ({ handleEdit, valueId }) => {
             <Text>Total Category:{getCategory.length}</Text>
             <Formik
                initialValues={categories}
-               validationSchema={categoriesSchema}
                onSubmit={(values, action) => {
                   handleSubmit(values);
                   action.resetForm();
