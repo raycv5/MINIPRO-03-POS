@@ -28,7 +28,7 @@ export const FromProducts = ({
                example : Beef Burger
             </FormHelperText>
          </FormControl>
-         <FormControl id="stock_quantity">
+         <FormControl id="stock_quantity" isRequired>
             <FormLabel>Quantity</FormLabel>
             <Input
                type="number"
@@ -37,12 +37,12 @@ export const FromProducts = ({
             />
             <FormHelperText fontSize={"12px"}>example : 20</FormHelperText>
          </FormControl>
-         <FormControl id="price">
+         <FormControl id="price" isRequired>
             <FormLabel>Price</FormLabel>
             <Input type="number" onChange={handleChange} value={values.price} />
             <FormHelperText fontSize={"12px"}>example : 20000</FormHelperText>
          </FormControl>
-         <FormControl id="description">
+         <FormControl id="description" isRequired>
             <FormLabel>Description</FormLabel>
             <Input
                type="text"
@@ -63,7 +63,7 @@ export const FromProducts = ({
                require: png, jpeg, jpg
             </FormHelperText>
          </FormControl>
-         <FormControl>
+         <FormControl isRequired>
             <FormLabel id="CategoryId">Category</FormLabel>
             <Select
                value={values.CategoryId}
@@ -78,7 +78,7 @@ export const FromProducts = ({
             </Select>
             <FormHelperText fontSize={"12px"}>Choose category</FormHelperText>
          </FormControl>
-         <FormControl>
+         <FormControl isRequired>
             <FormLabel id="SubCategoryId">Sub Category</FormLabel>
             <Select
                onChange={handleChange}

@@ -15,7 +15,6 @@ import {
    Textarea,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import { useSelector } from "react-redux";
 
 export const EditedModals = ({
    headers,
@@ -24,13 +23,9 @@ export const EditedModals = ({
    handleSubmitEdit,
    handleImage,
    find,
+   filterCategory,
+   filterSubCategory,
 }) => {
-   console.log(headers);
-   console.log(edited);
-   const getAllCategories = useSelector((state) => state.categories.value);
-   const getAllSubCategories = useSelector(
-      (state) => state.subCategories.value
-   );
    return (
       <>
          <ModalOverlay />
@@ -50,7 +45,7 @@ export const EditedModals = ({
                         <ModalHeader>Edit {headers.first}</ModalHeader>
                         <ModalCloseButton />
                         <ModalBody pb={6}>
-                           <FormControl>
+                           <FormControl isRequired>
                               <FormLabel>{headers.first}</FormLabel>
                               <Input
                                  placeholder={headers.first}
@@ -64,14 +59,15 @@ export const EditedModals = ({
                            {headers.first ==
                            "Category" ? null : headers.first ==
                              "Sub Category" ? (
-                              <FormControl mt={4}>
+                              <FormControl mt={4} isRequired>
                                  <FormLabel>{headers.second}</FormLabel>
                                  <Select
+                                    placeholder="Select a Category"
                                     onChange={handleChange}
                                     name="CategoryId"
                                     isRequired
                                     value={values.CategoryId}>
-                                    {getAllCategories?.map((categories) => (
+                                    {filterCategory?.map((categories) => (
                                        <option
                                           key={categories.id}
                                           value={categories.id}>
@@ -82,26 +78,26 @@ export const EditedModals = ({
                               </FormControl>
                            ) : (
                               <>
-                                 <FormControl>
+                                 <FormControl isRequired>
                                     <FormLabel>Price</FormLabel>
                                     <Input
-                                       placeholder='example: 20'
+                                       placeholder="example: 20000"
                                        name="price"
                                        value={values.price}
                                        onChange={handleChange}
                                     />
                                  </FormControl>
-                                 <FormControl>
+                                 <FormControl isRequired>
                                     <FormLabel>Quantity</FormLabel>
                                     <Input
-                                       placeholder={headers.first}
+                                       placeholder="example: 20"
                                        onChange={handleChange}
                                        name="stock_quantity"
                                        isRequired
                                        value={values.stock_quantity}
                                     />
                                  </FormControl>
-                                 <FormControl>
+                                 <FormControl isRequired>
                                     <FormLabel>Image</FormLabel>
                                     <Input
                                        name="image"
@@ -110,15 +106,15 @@ export const EditedModals = ({
                                        value={values.image}
                                     />
                                  </FormControl>
-                                 <FormControl mt={4}>
+                                 <FormControl mt={4} isRequired>
                                     <FormLabel>Category</FormLabel>
                                     <Select
                                        onChange={handleChange}
                                        name="CategoryId"
                                        isRequired
-                                       placeholder="Select a category"
+                                       placeholder="Select a Category"
                                        value={values.CategoryId}>
-                                       {getAllCategories?.map((categories) => (
+                                       {filterCategory?.map((categories) => (
                                           <option
                                              key={categories.id}
                                              value={categories.id}>
@@ -127,15 +123,15 @@ export const EditedModals = ({
                                        ))}
                                     </Select>
                                  </FormControl>
-                                 <FormControl mt={4}>
+                                 <FormControl mt={4} isRequired>
                                     <FormLabel>Sub category</FormLabel>
                                     <Select
                                        onChange={handleChange}
                                        name="SubCategoryId"
                                        isRequired
-                                       placeholder="Select subcategory"
+                                       placeholder="Select a Subcategory"
                                        value={values.SubCategoryId}>
-                                       {getAllSubCategories?.map(
+                                       {filterSubCategory?.map(
                                           (subCategories) => (
                                              <option
                                                 key={subCategories.id}
@@ -146,7 +142,7 @@ export const EditedModals = ({
                                        )}
                                     </Select>
                                  </FormControl>
-                                 <FormControl>
+                                 <FormControl isRequired>
                                     <FormLabel>Description</FormLabel>
                                     <Textarea
                                        name="description"
@@ -165,7 +161,15 @@ export const EditedModals = ({
                               type="submit"
                               onSubmit={handleSubmitEdit}
                               onClick={() => {
-                                 onClose();
+                                 values.name &&
+                                 values.description &&
+                                 values.price &&
+                                 values.image &&
+                                 values.CategoryId &&
+                                 values.SubCategoryId &&
+                                 values.stock_quantity
+                                    ? onClose()
+                                    : null;
                                  find();
                               }}>
                               Save

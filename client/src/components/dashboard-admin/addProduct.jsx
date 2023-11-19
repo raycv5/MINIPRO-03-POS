@@ -1,34 +1,36 @@
 /* eslint-disable react/prop-types */
-import { Stack, HStack } from "@chakra-ui/react";
+import { Stack, HStack, useToast } from "@chakra-ui/react";
 import { Tables } from "./Tables";
-import { useSelector } from "react-redux";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Formik, Form } from "formik";
 import { FromProducts } from "./FormAddProducts";
 import { SearchProducts } from "./SearchProducts";
 
-export const AddProduct = ({ handleEdit, valueId }) => {
-   console.log(valueId);
-   const getAllCategories = useSelector((state) => state.categories.value);
-   const getAllSubCategories = useSelector(
-      (state) => state.subCategories.value
-   );
+export const AddProduct = ({
+   handleEdit,
+   valueId,
+   filterCategory,
+   filterSubCategory,
+   fetchCategory,
+   fetchSubCategory,
+}) => {
+   const toast = useToast();
    const searchRef = useRef();
    const [searchProducts, setSearchProducts] = useState("");
    const [getProduct, setGetProduct] = useState([]);
    const [loading, setLoading] = useState(true);
+
    const [data] = useState({
       name: "",
       description: "",
-      price: 0,
-      stock_quantity: 0,
+      price: null,
+      stock_quantity: null,
       CategoryId: null,
       SubCategoryId: null,
       AdminId: 1,
    });
    const [image, setImage] = useState(null);
-
    const handleImage = (e) => {
       setImage(e.target.files[0]);
    };
@@ -37,10 +39,13 @@ export const AddProduct = ({ handleEdit, valueId }) => {
          const product = await axios.get(
             `http://localhost:2000/product?name=${searchProducts}`
          );
-         setGetProduct(product.data);
+         const filterProduct = product.data.filter(
+            (product) => product.isDeleted === false
+         );
+         setGetProduct(filterProduct);
          setLoading(false);
-         getAllCategories;
-         getAllSubCategories;
+         fetchCategory();
+         fetchSubCategory();
       } catch (error) {
          console.log(error);
       }
@@ -61,25 +66,30 @@ export const AddProduct = ({ handleEdit, valueId }) => {
          formData.append("SubCategoryId", data.SubCategoryId);
          formData.append("AdminId", data.AdminId);
          await axios.post(`http://localhost:2000/product`, formData);
+         toast({
+            title: "Success",
+            description: `Product created successfully`,
+            status: "success",
+            duration: 5000,
+            position: "top-left",
+            isClosable: true,
+         });
          findProduct();
       } catch (error) {
          console.log(error);
+         toast({
+            title: "Error",
+            description: `${error.response.data}`,
+            status: "error",
+            duration: 5000,
+            position: "top-left",
+            isClosable: true,
+         });
       }
    };
    const editedProduct = async (editValues) => {
       editValues.id = valueId;
       console.log(editValues);
-      // const currentProduct = await axios.get(
-      //    `http://localhost:2000/product/${valueId}`
-      // );
-      // const hasChanges =
-      //    editValues.name !== currentProduct?.data.name ||
-      //    editValues.descriptions !== currentProduct?.data.descriptions ||
-      //    editValues.stock_quantity !== currentProduct?.data.stock_quantity ||
-      //    editValues.price !== currentProduct?.data.price ||
-      //    editValues.CategoryId !== currentProduct?.data.CategoryId ||
-      //    editValues.SubCategoryId !== currentProduct?.data.SubCategoryId;
-      // if (hasChanges) {
       try {
          let formData = new FormData();
          formData.append("name", editValues.name);
@@ -93,11 +103,50 @@ export const AddProduct = ({ handleEdit, valueId }) => {
             `http://localhost:2000/product/${valueId}`,
             formData
          );
+         toast({
+            title: "Success",
+            description: "Product has been deleted ",
+            status: "success",
+            duration: 5000,
+            position: "top-left",
+            isClosable: true,
+         });
          findProduct();
       } catch (error) {
          console.log(error);
+         toast({
+            title: "Error",
+            description: `${error.response.data}`,
+            status: "error",
+            duration: 5000,
+            position: "top-left",
+            isClosable: true,
+         });
       }
-      // }
+   };
+   const deletedProduct = async () => {
+      try {
+         await axios.patch(`http://localhost:2000/product/delete/${valueId}`);
+         toast({
+            title: "Success",
+            description: "Product has been deleted ",
+            status: "success",
+            duration: 5000,
+            position: "top-left",
+            isClosable: true,
+         });
+         findProduct();
+      } catch (error) {
+         console.log(error);
+         toast({
+            title: "error",
+            description: `${error.response.data}`,
+            status: "error",
+            duration: 5000,
+            position: "top-left",
+            isClosable: true,
+         });
+      }
    };
    return (
       <Stack
@@ -122,8 +171,8 @@ export const AddProduct = ({ handleEdit, valueId }) => {
                      <FromProducts
                         handleChange={handleChange}
                         values={values}
-                        getAllCategories={getAllCategories}
-                        getAllSubCategories={getAllSubCategories}
+                        getAllCategories={filterCategory}
+                        getAllSubCategories={filterSubCategory}
                         handleImage={handleImage}
                         handleSubmit={handleSubmit}
                         loading={loading}
@@ -134,12 +183,14 @@ export const AddProduct = ({ handleEdit, valueId }) => {
          </Formik>
          <HStack justifyContent={"space-between"}>
             <SearchProducts
-               count={getProduct}
+               count={getProduct.length}
                searchRef={searchRef}
                setSearchProducts={setSearchProducts}
             />
          </HStack>
          <Tables
+            filterCategory={filterCategory}
+            filterSubCategory={filterSubCategory}
             handleImage={handleImage}
             handleEdit={handleEdit}
             count={getProduct.length}
@@ -148,6 +199,7 @@ export const AddProduct = ({ handleEdit, valueId }) => {
             edited={data}
             name="name"
             handleSubmitEdit={editedProduct}
+            handleSubmitDeleted={deletedProduct}
             loading={loading}
             headers={{
                first: "Product",
@@ -156,15 +208,3 @@ export const AddProduct = ({ handleEdit, valueId }) => {
       </Stack>
    );
 };
-//  data={getSubCategory}
-//       find={findSubCategories}
-//       name="name"
-//       headers={{
-//          first: "Sub Category",
-//       }}
-//       count={getSubCategory.length}
-//       handleEdit={handleEdit}
-//       edited={subCategories}
-//       handleSubmitEdit={editSubCategory}
-//       handleSubmitDeleted={deletedSubCategory}
-//       loading={isSubmitting}

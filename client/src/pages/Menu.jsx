@@ -52,6 +52,7 @@ export const Menu = () => {
       </GridItem>
       <GridItem>
         <MainContent
+
           area={"main"}
           product={product}
           getProducts={getProducts}

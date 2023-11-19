@@ -13,7 +13,7 @@ export const DeletedModals = ({ onClose, handleSubmitDeleted, find }) => {
       <>
          <ModalOverlay />
          <ModalContent>
-            <ModalHeader>Are you sure deleted?</ModalHeader>
+            <ModalHeader>Are you sure want to delete?</ModalHeader>
             <ModalCloseButton />
             {/* <ModalBody>Delete modal</ModalBody> */}
             <ModalFooter>

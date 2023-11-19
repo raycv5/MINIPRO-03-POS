@@ -1,32 +1,38 @@
 /* eslint-disable react/prop-types */
 import {
+   Stack,
    FormControl,
+   FormLabel,
    InputGroup,
    Input,
-   FormHelperText,
    InputRightElement,
-   FormLabel,
+   FormHelperText,
    Text,
 } from "@chakra-ui/react";
 import { CiSearch } from "react-icons/ci";
-export const SearchProducts = ({ searchRef, setSearchProducts, count }) => {
+
+export const SearchSubCategory = ({
+   searchRef,
+   setSearchSubCategory,
+   getSubCategory,
+}) => {
    return (
-      <>
-         <FormControl w={"30%"}>
-            <FormLabel>Search Product</FormLabel>
+      <Stack>
+         <FormControl>
+            <FormLabel>Search Subcategory</FormLabel>
             <InputGroup>
                <Input
                   type="text"
                   ref={searchRef}
-                  onChange={(e) => setSearchProducts(e.target.value)}
+                  onChange={(e) => setSearchSubCategory(e.target.value)}
                />
                <InputRightElement as={"button"}>
                   <CiSearch />
                </InputRightElement>
             </InputGroup>
-            <FormHelperText>example : Aren latte</FormHelperText>
+            <FormHelperText>example : Bread</FormHelperText>
          </FormControl>
-         <Text w={"50%"}>Total product : {count} </Text>
-      </>
+         <Text>Total SubCategory: {getSubCategory.length}</Text>
+      </Stack>
    );
 };

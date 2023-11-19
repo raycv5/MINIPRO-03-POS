@@ -14,7 +14,7 @@ module.exports = {
                name: {
                   [Op.like]: `%${name}%`,
                },
-               isDeleted: false,
+               // isDeleted: false,
             },
             include: [
                {
@@ -96,6 +96,21 @@ module.exports = {
             }
          );
          res.status(200).send("SubCategory deleted successfully");
+      } catch (error) {
+         res.status(400).send({ message: error.message });
+      }
+   },
+   removeSubCategory: async (req, res) => {
+      try {
+         await Sub_Category.update(
+            { isDeleted: false },
+            {
+               where: {
+                  id: req.params.id,
+               },
+            }
+         );
+         res.status(200).send("SubCategory restore successfully");
       } catch (error) {
          res.status(400).send({ message: error.message });
       }

@@ -14,7 +14,6 @@ module.exports = {
                name: {
                   [Op.like]: `%${name}%`,
                },
-               isDeleted: false,
             },
             include: [
                {
@@ -78,6 +77,21 @@ module.exports = {
             }
          );
          res.status(200).send("Category deleted successfully");
+      } catch (error) {
+         res.status(400).send({ message: error.message });
+      }
+   },
+   removeCategory: async (req, res) => {
+      try {
+         await Category.update(
+            { isDeleted: false },
+            {
+               where: {
+                  id: req.params.id,
+               },
+            }
+         );
+         res.status(200).send("Category removed successfully");
       } catch (error) {
          res.status(400).send({ message: error.message });
       }
