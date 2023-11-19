@@ -1,12 +1,24 @@
 import { Box, Button, Flex, Stack, Text } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { FaCheckCircle } from "react-icons/fa";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useReactToPrint } from "react-to-print";
 import axios from "axios";
 
 function SuccessTransaction() {
   const [transaction, setTransaction] = useState(null);
+
+  const transactionDate = new Date(transaction?.createdAt);
+
   let { id } = useParams();
+
+  const navigate = useNavigate();
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: "bills",
+    onAfterPrint: () => navigate("/home"),
+  });
 
   const getData = async () => {
     try {
@@ -26,7 +38,12 @@ function SuccessTransaction() {
   if (transaction) {
     return (
       <>
-        <Flex justifyContent="center" alignItems="center" height="100vh">
+        <Flex
+          ref={componentRef}
+          justifyContent="center"
+          alignItems="center"
+          height="100vh"
+        >
           <Stack bgColor="gray.100" padding="3%" rounded="xl" spacing="5">
             <Box>
               <Flex alignItems="center" gap="10px">
@@ -41,6 +58,16 @@ function SuccessTransaction() {
                 <Text>Cashier ID : 1</Text>
                 <Text>Transaction ID : {id}</Text>
               </Flex>
+              <Text fontSize="lg">
+                {transactionDate.toLocaleString("id-ID", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                })}
+              </Text>
             </Box>
             <Box>
               <Text fontSize="lg" fontWeight="semibold">
@@ -85,6 +112,7 @@ function SuccessTransaction() {
               </Flex>
 
               <Button
+                onClick={handlePrint}
                 width="100%"
                 bgColor="orange"
                 _hover={{ bgColor: "orange.300" }}
