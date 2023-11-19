@@ -6,10 +6,19 @@ import {
   Grid,
   GridItem,
   Image,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Radio,
   RadioGroup,
   Stack,
   Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { AiFillMinusCircle, AiFillPlusCircle } from "react-icons/ai";
@@ -19,6 +28,11 @@ import axios from "axios";
 
 function Cart({ getProducts, getCarts, cart }) {
   const [payment, setPayment] = useState("");
+  const [cashAmount, setCashAmount] = useState(0);
+  const [transactionId, setTransactionId] = useState(0);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   const navigate = useNavigate();
 
   const handleSubmit = async () => {
@@ -28,13 +42,16 @@ function Cart({ getProducts, getCarts, cart }) {
       data
     );
     const transactionId = transaction?.data?.data?.id;
+    setTransactionId(transactionId);
 
-    if (transactionId) {
-      navigate(`/transaction/${transactionId}`);
+    if (payment == 1) {
+      onOpen();
+    } else {
+      if (transactionId) {
+        navigate(`/transaction/${transactionId}`);
+      }
     }
   };
-
-  console.log(cart);
 
   const handlePayment = (id) => {
     setPayment(id);
@@ -68,6 +85,10 @@ function Cart({ getProducts, getCarts, cart }) {
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const handleCash = (e) => {
+    setCashAmount(e.target.value);
   };
 
   useEffect(() => {
@@ -252,6 +273,45 @@ function Cart({ getProducts, getCarts, cart }) {
           </Box>
         </Flex>
       </GridItem>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Change</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Flex flexDirection="column" gap="5">
+              <Text fontSize="xl">
+                Cash :{" "}
+                {cashAmount.toLocaleString("id-ID", {
+                  style: "currency",
+                  currency: "IDR",
+                })}{" "}
+              </Text>
+              <Text fontSize="xl">
+                Change :{" "}
+                {cashAmount - cart?.total_price < 0
+                  ? "0"
+                  : (cashAmount - cart?.total_price).toLocaleString("id-ID", {
+                      style: "currency",
+                      currency: "IDR",
+                    })}{" "}
+              </Text>
+              <Input onChange={handleCash} />
+            </Flex>
+          </ModalBody>
+          <ModalFooter>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={() => {
+                navigate(`/transaction/${transactionId}`);
+              }}
+            >
+              Checkout
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Grid>
   );
 }

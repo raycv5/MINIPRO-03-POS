@@ -4,24 +4,36 @@ import Cart from "../components/menu/Cart";
 import Sidebar from "../components/menu/Sidebar";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 export const Menu = () => {
   const [product, setProduct] = useState([]);
   const [cart, setCart] = useState([]);
   const [category, setCategory] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
-  const { categoryId } = useParams();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const categoryId = queryParams.get("category");
+  const name = queryParams.get("name");
+  const sort = queryParams.get("sort");
 
   const getProducts = async () => {
-    let url = "http://localhost:2000/product?name=";
+    let url = `http://localhost:2000/product?page=${currentPage}&limit=${itemsPerPage}`;
     if (categoryId) {
-      url = `http://localhost:2000/product/category/${categoryId}`;
+      url += `${url.includes("?") ? "&" : "?"}category=${categoryId}`;
     }
+    if (name) {
+      url += `${url.includes("?") ? "&" : "?"}name=${name}`;
+    }
+    if (sort) {
+      url += `${url.includes("?") ? "&" : "?"}sort=${sort}`;
+    }
+
     try {
       const response = await axios.get(url);
       setProduct(response?.data);
-      console.log(response);
     } catch (err) {
       console.error("Error fetching products:", err);
     }
@@ -39,12 +51,20 @@ export const Menu = () => {
   useEffect(() => {
     getProducts();
     getCarts();
-  }, []);
+  }, [currentPage]);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
 
   return (
     <Grid
       templateAreas={"sidebar main cart"}
-      gridTemplateColumns={"7% 1fr 23%"}
+      gridTemplateColumns={{
+        base: "0% 1fr 0",
+        lg: "5% 1fr 28%",
+        xl: "7% 1fr 23%",
+      }}
       height="100%"
     >
       <GridItem>
@@ -52,7 +72,6 @@ export const Menu = () => {
       </GridItem>
       <GridItem>
         <MainContent
-
           area={"main"}
           product={product}
           getProducts={getProducts}
@@ -60,6 +79,8 @@ export const Menu = () => {
           category={category}
           setCategory={setCategory}
           categoryId={categoryId}
+          handlePageChange={handlePageChange}
+          currentPage={currentPage}
         />
       </GridItem>
       <GridItem>
