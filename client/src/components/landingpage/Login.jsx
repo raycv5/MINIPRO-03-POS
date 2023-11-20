@@ -11,9 +11,12 @@ import {
 } from "@chakra-ui/react";
 import * as Yup from "yup";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 
 
 export const LoginAdmin = () => {
+   const navigate = useNavigate();
     const toast = useToast()
   const validationSchema = Yup.object({
     email: Yup.string().email("Invalid email format").required("Email is required"),
@@ -38,7 +41,7 @@ export const LoginAdmin = () => {
       } else {
          console.log('Login successful');
         localStorage.setItem("tokenAdmin", response.data.token);
-         // dispatch(setAdminData(response.data));
+         navigate("/dashboard-admin")
         toast({
             title: "success",
             description: 'Login success',
@@ -121,6 +124,7 @@ export const LoginAdmin = () => {
               colorScheme="orange"
               w={{ base: "50%", sm:"70%", md: "50%", lg: "50%" }}
               type="submit"
+              
             >
               Login 
             </Button>

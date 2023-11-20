@@ -1,26 +1,39 @@
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouterProvider, createBrowserRouter, } from "react-router-dom";
 import { LandingPage } from "./pages/LandingPage";
 import { Menu } from "./pages/Menu";
 import { DasboardAdminPages } from "./pages/DashboardAdmin";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { setAdminData } from "./Redux/AdminSlice";
+
+ import { useEffect } from "react";
+ import { useDispatch } from "react-redux";
+ import { setAdminData } from "./Redux/AdminSlice";
 import { categoryData } from "./redux/categorySlice";
 import { subCategoryData } from "./redux/subCategorySlice";
-import { setCashierData } from "./Redux/CashierSlice";
+ import { setCashierData } from "./Redux/CashierSlice";
 import SuccessTransaction from "./pages/SuccessTransaction";
-import axios from "axios";
+ import UserProfile from "./components/dashboard-admin/profileAdmin";
+
+ import axios from "axios";
+ import { RegisterPage } from "./pages/RegisterPages";
+ import { CashierProfile } from "./components/menu/profileCashier";
+// import Verify from "./pages/verified";
+
+
+
 
 const router = createBrowserRouter([
-  { path: "/", element: <LandingPage /> },
-  { path: "/dashboard-admin", element: <DasboardAdminPages /> },
-  {
+   { path: "/", element: <LandingPage /> },
+   { path: "/linechart", element: <Linechart /> },
+   { path: "/dashboard-admin", element: <DasboardAdminPages /> },
+   { path: "/home", element: <Menu /> },
+   { path: "/registerCashier", element: <RegisterPage />},
+   { path : "/profile-admin", element: <UserProfile />},
+   {path: "/profile-cashier", element: <CashierProfile />},
+      {
     path: "/dashboard-admin/category/:categoryId",
     element: <DasboardAdminPages />,
   },
-  { path: "/home", element: <Menu /> },
-  // { path: "/home/category/:categoryId", element: <Menu /> },
-  { path: "/transaction/:id", element: <SuccessTransaction /> },
+   { path: "/transaction/:id", element: <SuccessTransaction /> },
+    //  { path : "/verified/", element: <Verify />}
 ]);
 
 function App() {
@@ -92,7 +105,7 @@ function App() {
     keepLogin();
     keepLoginCashier();
   }, []);
-
+  
   return (
     <>
       <RouterProvider router={router} />
