@@ -11,8 +11,10 @@ import {
 } from "@chakra-ui/react";
 import * as Yup from "yup";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export const LoginCashier = () => {
+    const navigate = useNavigate();
     const toast = useToast()
   const validationSchema = Yup.object({
     email: Yup.string().email("Invalid email address").required("Email is required"),
@@ -38,6 +40,7 @@ export const LoginCashier = () => {
       } else {
          console.log('Login successful');
         localStorage.setItem("tokenCashier", response.data.token);
+        navigate('/home')
         toast({
             title: "succes",
             description: 'Login success',

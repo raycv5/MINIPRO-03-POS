@@ -16,10 +16,12 @@ import { HiOutlineSquaresPlus } from "react-icons/hi2";
 import { LuListPlus } from "react-icons/lu";
 import { AddSubCategory } from "../components/dashboard-admin/addSubcategory";
 import { AddProduct } from "../components/dashboard-admin/addProduct";
+import { ListCashier } from "../components/dashboard-admin/listCashier"
 import { Trash } from "../components/dashboard-admin/Trash";
 import { Reports } from "../components/dashboard-admin/Reports";
 import axios from "axios";
 import { useLocation, useParams } from "react-router-dom";
+
 
 export const DasboardAdminPages = () => {
    const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
@@ -172,7 +174,7 @@ export const DasboardAdminPages = () => {
                   ) : main == 1 ? (
                      <Reports />
                   ) : main == 2 ? (
-                     main
+                     <ListCashier />
                   ) : main == 3 ? (
                      <AddCategory handleEdit={handleEdit} valueId={valueId} />
                   ) : main == 4 ? (
