@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>email Confirmation</title>
-</head>
-<body>
-    <h2>Selamat akun {{username}} telah terdaftar</h2>
-    <h2>silahkan lakukan verifikasi</h2>
-    <button>verifikasi</button>
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Verification</title>
+    </head>
+    <body>
+        <h1>Hi {{ fullname }}</h1>
+        <h2>Your account have been created, please verify.</h2>
+        <button>
+            <a href="{{ link }}">Verify Account</a>
+        </button>
+    </body>
 </html>
+
+
+

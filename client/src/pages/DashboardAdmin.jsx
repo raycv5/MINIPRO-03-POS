@@ -14,6 +14,8 @@ import { HiOutlineSquaresPlus } from "react-icons/hi2";
 import { LuListPlus } from "react-icons/lu";
 import { AddSubCategory } from "../components/dashboard-admin/addSubcategory";
 import { AddProduct } from "../components/dashboard-admin/addProduct";
+import { ListCashier } from "../components/dashboard-admin/listCashier"
+
 
 export const DasboardAdminPages = () => {
    const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
@@ -83,7 +85,7 @@ export const DasboardAdminPages = () => {
                   {main == 1 ? (
                      main
                   ) : main == 2 ? (
-                     main
+                     <ListCashier />
                   ) : main == 3 ? (
                      <ProductMenuAdmin />
                   ) : main == 4 ? (
