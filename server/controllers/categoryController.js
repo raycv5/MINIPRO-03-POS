@@ -1,10 +1,32 @@
 const { Category, Admin, Sub_Category, Product } = require("../models");
-
+const { Op } = require("sequelize");
 
 module.exports = {
    getAllCategory: async (req, res) => {
       try {
-         const categories = await Category.findAll();
+         const { name } = req.query;
+         const where = {};
+         if (name) {
+            where.name = name;
+         }
+         const categories = await Category.findAll({
+            where: {
+               name: {
+                  [Op.like]: `%${name}%`,
+               },
+            },
+            include: [
+               {
+                  model: Sub_Category,
+                  attributes: ["name"],
+               },
+               {
+                  model: Product,
+                  attributes: ["name"],
+               },
+            ],
+            order: [["name", "ASC"]],
+         });
          res.status(200).send(categories);
       } catch (error) {
          res.status(400).send({ message: error.message });
@@ -16,6 +38,7 @@ module.exports = {
          const categoriesExist = await Category.findOne({
             where: {
                name,
+               isDeleted: false,
             },
          });
          if (categoriesExist) {
@@ -45,25 +68,47 @@ module.exports = {
    },
    deleteCategory: async (req, res) => {
       try {
-         await Category.destroy({
-            where: {
-               id: req.params.id,
-            },
-         });
+         await Category.update(
+            { isDeleted: true },
+            {
+               where: {
+                  id: req.params.id,
+               },
+            }
+         );
          res.status(200).send("Category deleted successfully");
       } catch (error) {
          res.status(400).send({ message: error.message });
       }
    },
-   getCategoryById: async (req, res) => {
+   removeCategory: async (req, res) => {
       try {
-         const categoryById = await Category.findOne({
+         await Category.update(
+            { isDeleted: false },
+            {
+               where: {
+                  id: req.params.id,
+               },
+            }
+         );
+         res.status(200).send("Category removed successfully");
+      } catch (error) {
+         res.status(400).send({ message: error.message });
+      }
+   },
+   getCategoryByName: async (req, res) => {
+      try {
+         const categoryById = await Category.findAll({
             where: {
-               id: req.params.id,
+               name: req.query.name,
             },
             include: [
                {
                   model: Sub_Category,
+                  attributes: ["id", "name"],
+               },
+               {
+                  model: Product,
                   attributes: ["id", "name"],
                },
             ],
@@ -77,7 +122,7 @@ module.exports = {
       try {
          const countCategories = await Category.count({
             where: {
-               AdminId: req.query.AdminId,
+               AdminId: 1,
             },
          });
          res.status(200).send({ count: countCategories });

@@ -15,7 +15,7 @@ module.exports = {
     try {
       const response = await Cart.findAll({
         where: { CashierId: req.params.id, isActive: true },
-        include: [{ model: Product, attributes: ["name", "price"] }],
+        include: [{ model: Product, attributes: ["name", "price", "image"] }],
       });
       let totalPrice = 0;
       for (let item of response) {

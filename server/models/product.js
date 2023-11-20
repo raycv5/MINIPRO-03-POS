@@ -17,36 +17,40 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Product.init(
-    {
-      name: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      description: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      image: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      price: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0,
-      },
-      stock_quantity: {
-        type: DataTypes.INTEGER,
-        defaultValue: 1,
-      },
-      isDisabled: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-      },
-    },
-    {
-      sequelize,
-      modelName: "Product",
-    }
+     {
+        name: {
+           type: DataTypes.STRING,
+           allowNull: false,
+        },
+        description: {
+           type: DataTypes.STRING,
+           allowNull: false,
+        },
+        image: {
+           type: DataTypes.STRING,
+           allowNull: false,
+        },
+        price: {
+           type: DataTypes.INTEGER,
+           defaultValue: 0,
+        },
+        stock_quantity: {
+           type: DataTypes.INTEGER,
+           defaultValue: 1,
+        },
+        isDisabled: {
+           type: DataTypes.BOOLEAN,
+           defaultValue: false,
+        },
+        isDeleted: {
+           type: DataTypes.BOOLEAN,
+           defaultValue: false,
+        },
+     },
+     {
+        sequelize,
+        modelName: "Product",
+     }
   );
   return Product;
 };

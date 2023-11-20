@@ -1,16 +1,60 @@
 /* eslint-disable react/prop-types */
-import { Box, Flex, Grid, GridItem, Image, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Grid,
+  GridItem,
+  Image,
+  Select,
+  Text,
+} from "@chakra-ui/react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
-function MenuCard({ product, getProducts }) {
+function MenuCard({
+  product,
+  getProducts,
+  getCarts,
+  handlePageChange,
+  currentPage,
+}) {
+  const navigate = useNavigate();
+
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const categoryId = queryParams.get("category");
+  const name = queryParams.get("name");
+
+  const filteredProducts = product.filter((item) => item.isDisabled === false);
+
   const handleClick = async (id) => {
     const data = { ProductId: id, CashierId: 1 };
     try {
       await axios.post("http://localhost:2000/carts/", data);
       getProducts();
+      getCarts();
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const handleSort = (value) => {
+    const queryParams = [];
+
+    if (categoryId) {
+      queryParams.push(`category=${categoryId}`);
+    }
+    if (name) {
+      queryParams.push(`name=${name}`);
+    }
+    const queryString =
+      queryParams.length > 0 ? `?${queryParams.join("&")}` : "";
+
+    const sort = queryParams.length > 0 ? `&sort=${value}` : `?sort=${value}`;
+
+    navigate(`/home${queryString}${sort}`);
+    window.location.reload();
   };
 
   return (
@@ -20,12 +64,31 @@ function MenuCard({ product, getProducts }) {
           <Text fontWeight="bold" fontSize="2xl">
             Menu
           </Text>
-          <Text fontWeight="bold">Sort by</Text>
+          <Select
+            placeholder="Sort by"
+            width="15%"
+            bgColor="white"
+            onChange={(e) => handleSort(e.target.value)}
+          >
+            <option value="nameAZ">Name A-Z</option>
+            <option value="nameZA">Name Z-A</option>
+            <option value="priceAsc">Cheapest - Expensive</option>
+            <option value="priceDesc">Expensive - Cheapest</option>
+          </Select>
         </Flex>
       </Box>
       <Box padding="1% 3%">
-        <Grid templateColumns="repeat(5, 1fr)" gap={5}>
-          {product.map((item) => {
+        <Grid
+          templateColumns={{
+            base: "repeat(2, 1fr)",
+            sm: "repeat(2, 1fr)",
+            md: "repeat(3, 1fr)",
+            xl: "repeat(4, 1fr)",
+            "2xl": "repeat(5, 1fr)",
+          }}
+          gap={5}
+        >
+          {filteredProducts?.map((item) => {
             return (
               <GridItem key={item.id}>
                 <Flex
@@ -51,7 +114,7 @@ function MenuCard({ product, getProducts }) {
                     height="200px"
                     objectFit="cover"
                     rounded="xl"
-                    src="https://asset.kompas.com/crops/JFC1_i_OaGvcNEviEw4WKk-r3qQ=/12x51:892x637/750x500/data/photo/2022/03/05/622358ed771fb.jpg"
+                    src={`http://localhost:2000/${item.image}`}
                   />
 
                   <Text fontWeight="bold">{item.name}</Text>
@@ -73,6 +136,16 @@ function MenuCard({ product, getProducts }) {
             );
           })}
         </Grid>
+        <Flex gap="5" marginTop="10px">
+          <Text
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </Text>
+          <Text>{currentPage}</Text>
+          <Text onClick={() => handlePageChange(currentPage + 1)}>Next</Text>
+        </Flex>
       </Box>
     </>
   );
