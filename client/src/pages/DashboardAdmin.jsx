@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { Box, Grid, GridItem, useDisclosure } from "@chakra-ui/react";
 import { Navbar } from "../components/dashboard-admin/Navbar";
@@ -18,7 +19,7 @@ import { AddProduct } from "../components/dashboard-admin/addProduct";
 import { Trash } from "../components/dashboard-admin/Trash";
 import { Reports } from "../components/dashboard-admin/Reports";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 export const DasboardAdminPages = () => {
    const [isSmallerThan768] = useMediaQuery("(max-width: 768px)");
@@ -28,18 +29,29 @@ export const DasboardAdminPages = () => {
    const [filterSubCategory, setFilteredSubCategories] = useState();
    const [category, setCategory] = useState([]);
    const [product, setProduct] = useState([]);
-
-   const { categoryId } = useParams();
+   const location = useLocation();
+   const queryParams = new URLSearchParams(location.search);
+   const categoryId = queryParams.get("category");
+   const name = queryParams.get("name");
+   const sort = queryParams.get("sort");
+     const [currentPage, setCurrentPage] = useState(1);
+     const itemsPerPage = 10;
 
    const getProducts = async () => {
-      let url = "http://localhost:2000/product?name=";
+      let url = `http://localhost:2000/product?page=${currentPage}&limit=${itemsPerPage}`;
       if (categoryId) {
-         url = `http://localhost:2000/product/category/${categoryId}`;
+         url += `${url.includes("?") ? "&" : "?"}category=${categoryId}`;
       }
+      if (name) {
+         url += `${url.includes("?") ? "&" : "?"}name=${name}`;
+      }
+      if (sort) {
+         url += `${url.includes("?") ? "&" : "?"}sort=${sort}`;
+      }
+
       try {
          const response = await axios.get(url);
          setProduct(response?.data);
-         console.log(response);
       } catch (err) {
          console.error("Error fetching products:", err);
       }
@@ -90,7 +102,7 @@ export const DasboardAdminPages = () => {
       onClose();
    };
    useEffect(() => {
-      getProducts()
+      getProducts();
       fetchCategory();
       fetchSubCategory();
    }, []);
@@ -180,6 +192,7 @@ export const DasboardAdminPages = () => {
                         valueId={valueId}
                         filterCategory={filterCategory}
                         filterSubCategory={filterSubCategory}
+                        product={product}
                      />
                   ) : (
                      <Trash />

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { TabsTrash } from "./Tabs";
+import { useLocation } from "react-router-dom";
 
 export const Trash = () => {
    const [filteredCategories, setFilteredCategories] = useState();
@@ -33,18 +34,53 @@ export const Trash = () => {
          console.log(error);
       }
    };
-   const getProduct = async () => {
-      try {
-         const product = await axios.get(`http://localhost:2000/product?name=`);
-         const deletedproduct = product.data.filter(
-            (product) => product.isDeleted === true
-         );
-         console.log(product)
-         setFilteredProduct(deletedproduct);
-      } catch (error) {
-         console.log(error);
-      }
-   };
+   // const getProduct = async () => {
+   //    try {
+   //       const product = await axios.get(`http://localhost:2000/product?name=`);
+   //       const deletedproduct = product.data.filter(
+   //          (product) => product.isDeleted === true
+   //       );
+   //       console.log(product)
+   //       setFilteredProduct(deletedproduct);
+   //    } catch (error) {
+   //       console.log(error);
+   //    }
+   // };
+
+const location = useLocation();
+const queryParams = new URLSearchParams(location.search);
+const categoryId = queryParams.get("category");
+const name = queryParams.get("name");
+const sort = queryParams.get("sort");
+const [currentPage, setCurrentPage] = useState(1);
+const itemsPerPage = 10;
+
+const getProduct = async () => {
+   let url = `http://localhost:2000/product?page=${currentPage}&limit=${itemsPerPage}`;
+   if (categoryId) {
+      url += `${url.includes("?") ? "&" : "?"}category=${categoryId}`;
+   }
+   if (name) {
+      url += `${url.includes("?") ? "&" : "?"}name=${name}`;
+   }
+   if (sort) {
+      url += `${url.includes("?") ? "&" : "?"}sort=${sort}`;
+   }
+
+   try {
+      const response = await axios.get(url);
+      const deletedproduct = response?.data.filter(
+         (product) => product.isDeleted === true
+      );
+      setFilteredProduct(deletedproduct);
+   } catch (err) {
+      console.error("Error fetching products:", err);
+   }
+};
+
+
+
+
    const restoreCategory = async (categoryId) => {
       console.log(categoryId);
       try {

@@ -18,6 +18,7 @@ function MenuCard({
   getCarts,
   handlePageChange,
   currentPage,
+  route
 }) {
   const navigate = useNavigate();
 
@@ -53,7 +54,7 @@ function MenuCard({
 
     const sort = queryParams.length > 0 ? `&sort=${value}` : `?sort=${value}`;
 
-    navigate(`/home${queryString}${sort}`);
+    navigate(`/${route}${queryString}${sort}`);
     window.location.reload();
   };
 

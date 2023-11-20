@@ -10,11 +10,10 @@ import MenuCard from "../menu/MenuCard";
 export const ProductMenuAdmin = ({
    product,
    getProducts,
-   getCarts,
    setCategory,
    categoryId,
 }) => {
-   console.log(product)
+   console.log(product);
    return (
       <>
          <Navbar
@@ -27,6 +26,7 @@ export const ProductMenuAdmin = ({
             product={product}
             getProducts={getProducts}
             categoryId={categoryId}
+            route={"dashboard-admin"}
          />
       </>
    );

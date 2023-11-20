@@ -119,7 +119,7 @@ export const AddCategory = ({ handleEdit, valueId }) => {
    };
    useEffect(() => {
       findCategories();
-   }, [searchCategory]);
+   }, []);
    return (
       <Stack
          bg={"white"}

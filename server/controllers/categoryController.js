@@ -71,7 +71,7 @@ module.exports = {
          await Category.update(
             { isDeleted: true },
             {
-               where: {
+               where: { 
                   id: req.params.id,
                },
             }

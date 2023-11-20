@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { Stack, HStack, useToast } from "@chakra-ui/react";
 import { Tables } from "./Tables";
@@ -5,18 +6,15 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Formik, Form } from "formik";
 import { FromProducts } from "./FormAddProducts";
-import { SearchProducts } from "./SearchProducts";
+import { useLocation } from "react-router-dom";
 
 export const AddProduct = ({
    handleEdit,
    valueId,
    filterCategory,
    filterSubCategory,
-   fetchCategory,
-   fetchSubCategory,
 }) => {
    const toast = useToast();
-   const searchRef = useRef();
    const [searchProducts, setSearchProducts] = useState("");
    const [getProduct, setGetProduct] = useState([]);
    const [loading, setLoading] = useState(true);
@@ -34,25 +32,42 @@ export const AddProduct = ({
    const handleImage = (e) => {
       setImage(e.target.files[0]);
    };
+   const location = useLocation();
+   const queryParams = new URLSearchParams(location.search);
+   const categoryId = queryParams.get("category");
+   const name = queryParams.get("name");
+   const sort = queryParams.get("sort");
+   const [currentPage, setCurrentPage] = useState(1);
+   const itemsPerPage = 10;
+
    const findProduct = async () => {
+      let url = `http://localhost:2000/product?page=${currentPage}&limit=${itemsPerPage}`;
+      if (categoryId) {
+         url += `${url.includes("?") ? "&" : "?"}category=${categoryId}`;
+      }
+      if (name) {
+         url += `${url.includes("?") ? "&" : "?"}name=${name}`;
+      }
+      if (sort) {
+         url += `${url.includes("?") ? "&" : "?"}sort=${sort}`;
+      }
+
       try {
-         const product = await axios.get(
-            `http://localhost:2000/product?name=${searchProducts}`
-         );
-         const filterProduct = product.data.filter(
+         const response = await axios.get(url);
+         const filteredProduct = response?.data.filter(
             (product) => product.isDeleted === false
          );
-         setGetProduct(filterProduct);
+         setGetProduct(filteredProduct);
          setLoading(false);
-         fetchCategory();
-         fetchSubCategory();
-      } catch (error) {
-         console.log(error);
+      } catch (err) {
+         console.error("Error fetching products:", err);
       }
    };
+   console.log(getProduct);
+
    useEffect(() => {
       findProduct();
-   }, [searchProducts]);
+   }, []);
 
    const handleSubmit = async (data) => {
       try {
@@ -182,11 +197,11 @@ export const AddProduct = ({
             }}
          </Formik>
          <HStack justifyContent={"space-between"}>
-            <SearchProducts
+            {/* <SearchProducts
                count={getProduct.length}
                searchRef={searchRef}
                setSearchProducts={setSearchProducts}
-            />
+            /> */}
          </HStack>
          <Tables
             filterCategory={filterCategory}
