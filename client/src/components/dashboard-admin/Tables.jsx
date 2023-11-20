@@ -62,6 +62,7 @@ export const Tables = ({
    };
    const offset = currentPage * itemsPerPage;
    const paginatedItems = data?.slice(offset, offset + itemsPerPage);
+   console.log(data)
    
    useEffect(() => {
       find();
@@ -70,8 +71,8 @@ export const Tables = ({
    return (
       <>
          <Flex w={"15%"} gap={"20px"} alignSelf={"end"}>
-            <Text>Sort</Text>
-            <Select h={"30px"}></Select>
+            {/* <Text>Sort</Text>
+            <Select h={"30px"}></Select> */}
          </Flex>
          {!loading ? (
             <Collapse in={!loading} transition={{ enter: { duration: 2 } }}>

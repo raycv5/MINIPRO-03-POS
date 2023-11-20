@@ -13,22 +13,23 @@ function MainContent({
   currentPage,
 }) {
   return (
-    <Flex flexDirection="column" bgColor="gray.100" height="100%">
-      <Navbar
-        route={"home"}
-        setCategory={setCategory}
-        getProducts={getProducts}
-        categoryId={categoryId}
-      />
-      <MenuCard
-        product={product}
-        getProducts={getProducts}
-        getCarts={getCarts}
-        categoryId={categoryId}
-        handlePageChange={handlePageChange}
-        currentPage={currentPage}
-      />
-    </Flex>
+     <Flex flexDirection="column" bgColor="gray.100" height="100%">
+        <Navbar
+           route={"home"}
+           setCategory={setCategory}
+           getProducts={getProducts}
+           categoryId={categoryId}
+        />
+        <MenuCard
+           product={product}
+           getProducts={getProducts}
+           getCarts={getCarts}
+           categoryId={categoryId}
+           handlePageChange={handlePageChange}
+           currentPage={currentPage}
+           route={"home"}
+        />
+     </Flex>
   );
 }
 
